@@ -3,6 +3,7 @@ schemas/gschemas.compiled
 
 # GNOME Shell and editor artifacts.
 *.zip
+dist/
 *~
 .idea/
 .vscode/

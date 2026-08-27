@@ -19,8 +19,6 @@ const defaultVoice = 'zh-CN-XiaoxiaoNeural';
 const defaultCodec = 'audio-24khz-48kbitrate-mono-mp3';
 const audioPathHeader = new TextEncoder().encode('Path:audio\r\n');
 
-let writeToFile = false;
-
 // https://github.com/SchneeHertz/node-edge-tts/blob/master/src/drm.ts
 function generateSecMsGecToken() {
     const ticks = BigInt(Math.floor((Date.now() / 1000) + Number(windowsFileTimeEpoch))) * 10000000n
@@ -244,17 +242,6 @@ export class AzureTTS extends GObject.Object {
             if (data) {
                 let buf = Gst.Buffer.new_wrapped_bytes(data);
                 this._pushBuffer(buf);
-
-                if (writeToFile) {
-                    if (!this.f) {
-                        this.f = Gio.file_new_for_path('/tmp/test-tts.mp3');
-                        let raw = this.f.replace(null, false,
-                            Gio.FileCreateFlags.NONE,
-                            null);
-                        this.out = Gio.BufferedOutputStream.new_sized(raw, 4096 * 10);
-                    }
-                    this.out.write_bytes(data, null);
-                }
             }
         }
     }
@@ -285,21 +272,7 @@ export class AzureTTS extends GObject.Object {
         return true;
     }
 
-    _closeFile() {
-        if (!writeToFile)
-            return;
-
-        if (this.out) {
-            this.out.close(null);
-            this.out = null;
-        }
-        if (this.f) {
-            this.f = null;
-        }
-    }
-
     _onClosed() {
-        this._closeFile();
         this._playerState = Gst.State.PLAYING;
         this._pipeline.set_state(Gst.State.PLAYING);
         this._disconnectSignals();
@@ -327,7 +300,6 @@ export class AzureTTS extends GObject.Object {
             this.websocket.close(Soup.WebsocketCloseCode.NORMAL, '');
             this.websocket = null;
         }
-        this._closeFile();
         this._playerState = Gst.State.NULL;
         this._pipeline.set_state(Gst.State.VOID_PENDING);
         this._pipeline.set_state(Gst.State.PAUSED);

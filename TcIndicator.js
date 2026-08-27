@@ -26,7 +26,7 @@ import { Fields, defaultConfig } from './config/constants.js';
 import { TranslateWindow } from './TranslateWindow.js';
 import {VisionRecognizer} from './vision.js';
 
-const IndicatorName = 'Translate Clipboard';
+const IndicatorName = 'Translate Clipboard Plus';
 
 export const TcIndicator = GObject.registerClass(
     class TcIndicator extends Button {

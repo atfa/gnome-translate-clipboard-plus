@@ -2,7 +2,7 @@
 
 set -Eeuo pipefail
 
-readonly UUID='translate-clipboard@lsnow.github.io'
+readonly UUID='translate-clipboard-plus@atfa.github.io'
 readonly SOURCE_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 readonly EXTENSIONS_DIR="${XDG_DATA_HOME:-${HOME}/.local/share}/gnome-shell/extensions"
 readonly TARGET_DIR="${EXTENSIONS_DIR}/${UUID}"
@@ -51,7 +51,7 @@ for command_name in rsync glib-compile-schemas; do
     fi
 done
 
-if ! grep -Eq '"uuid"[[:space:]]*:[[:space:]]*"translate-clipboard@lsnow\.github\.io"' \
+if ! grep -Eq '"uuid"[[:space:]]*:[[:space:]]*"translate-clipboard-plus@atfa\.github\.io"' \
     "${SOURCE_DIR}/metadata.json"; then
     printf 'Refusing to deploy: metadata.json does not contain the expected UUID.\n' >&2
     exit 1
@@ -76,6 +76,14 @@ rsync -a \
     --exclude='.git/' \
     --exclude='.gitignore' \
     --exclude='deploy.sh' \
+    --exclude='build.sh' \
+    --exclude='README.md' \
+    --exclude='CHANGELOG.md' \
+    --exclude='CONTRIBUTING.md' \
+    --exclude='PRIVACY.md' \
+    --exclude='RELEASE_NOTES.md' \
+    --exclude='LICENSE' \
+    --exclude='dist/' \
     --exclude='*.zip' \
     "${SOURCE_DIR}/" "${stage_dir}/"
 

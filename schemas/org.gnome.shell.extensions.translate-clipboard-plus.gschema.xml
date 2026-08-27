@@ -1,6 +1,6 @@
 <schemalist gettext-domain="gnome-shell-extensions">
-  <schema id="org.gnome.shell.extensions.translate-clipboard"
-    path="/org/gnome/shell/extensions/translate-clipboard/">
+  <schema id="org.gnome.shell.extensions.translate-clipboard-plus"
+    path="/org/gnome/shell/extensions/translate-clipboard-plus/">
     <key name="from" type="s">
       <default>'auto'</default>
       <summary>Source language</summary>

@@ -9,7 +9,7 @@ import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import {gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
 import {notify} from 'resource:///org/gnome/shell/ui/main.js';
 
-const IndicatorName = 'Translate Clipboard';
+const IndicatorName = 'Translate Clipboard Plus';
 const PANEL_WIDTH = 400;
 const PANEL_MARGIN = 12;
 
@@ -203,7 +203,7 @@ export const TranslateWindow = GObject.registerClass(
                 x_expand: true
             });
             let dragHandle = new St.Label({
-                text: _('Translate Clipboard'),
+                text: _('Translate Clipboard Plus'),
                 style_class: 'tc-toolbar-title',
                 x_expand: true,
                 y_align: Clutter.ActorAlign.CENTER,
@@ -664,7 +664,7 @@ export const TranslateWindow = GObject.registerClass(
                 if (this._engine === 'Google' && !this._briefMode)
                     this._appendGoogleDetails(json, context);
             } catch (error) {
-                console.error(`Translate Clipboard: ${error.message}\n${error.stack}`);
+                console.error(`Translate Clipboard Plus: ${error.message}\n${error.stack}`);
                 notify(IndicatorName, _('Translation result could not be displayed.'));
                 this._resultBox.add_child(this._createResultSection(
                     _('Error'), error.message || String(error), null, false, false,

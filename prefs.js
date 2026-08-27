@@ -14,7 +14,7 @@ import {providers as Providers} from './llm.js';
 import * as Utils from './utils.js';
 import * as Languages from './languages.js';
 
-const SOURCE_URL = 'https://github.com/lsnow/translate-clipboard';
+const SOURCE_URL = 'https://github.com/atfa/gnome-translate-clipboard-plus';
 const ISSUES_URL = `${SOURCE_URL}/issues`;
 const LICENSE_URL = `${SOURCE_URL}/blob/main/LICENSE`;
 const EXTENSION_PAGE_URL = 'https://extensions.gnome.org/extension/4097/translate-clipboard/';
@@ -723,12 +723,13 @@ class AboutPage extends Adw.PreferencesPage {
         this._metadata = metadata ?? {};
 
         const aboutGroup = new Adw.PreferencesGroup({
-            title: this._metadata.name || _('Translate clipboard'),
-            description: _('Translate clipboard text.')
+            title: this._metadata.name || _('Translate Clipboard Plus'),
+            description: _('Clipboard translation, screenshot OCR, and reverse checks.')
         });
         this.add(aboutGroup);
 
         this._addInfoRow(aboutGroup, _('Privacy Notice'), _('This extension needs clipboard access and may send clipboard contents to third-party translation, text-to-speech, or LLM services.'));
+        this._addInfoRow(aboutGroup, _('Credits'), _('Forked from Translate Clipboard by lsnow and extended by atfa.'));
 
         const linksGroup = new Adw.PreferencesGroup();
         this.add(linksGroup);
