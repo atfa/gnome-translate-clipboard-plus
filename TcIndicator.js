@@ -324,7 +324,7 @@ export const TcIndicator = GObject.registerClass(
                         this._clipboardChanged();
                     }
                 }
-            });
+            );
         }
 
         _clipboardChanged() {
@@ -572,18 +572,8 @@ export const TcIndicator = GObject.registerClass(
         }
 
         _updateMenuSelection (menuItems, selectedValue) {
-            return;
-            for (let key in menuItems) {
-                let item = menuItems[key];
-                if (item && item.setOrnament) {
-                    item.setOrnament(PopupMenu.Ornament.NONE);
-                }
-            }
-
-            let selectedItem = menuItems[selectedValue];
-            if (selectedItem && selectedItem.setOrnament) {
-                selectedItem.setOrnament(PopupMenu.Ornament.DOT);
-            }
+            // The selector label already shows the active value. Keeping this
+            // method as a no-op avoids expensive ornament updates on long menus.
         }
 
         _updateLanguageSelectorValue(valueLabel, value) {
