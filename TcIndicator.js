@@ -45,8 +45,8 @@ export const TcIndicator = GObject.registerClass(
             this._ttsEngine = this._settings.get_string(Fields.TTS_ENGINE);
             this._proxy = this._settings.get_string(Fields.PROXY);
             this._briefMode = this._settings.get_boolean(Fields.BRIEF_MODE);
-            this._detectingLanguage = false;
-            this._pendingText = null;
+            this._activeRequest = null;
+            this._primaryContext = null;
 
             this._locale = this._getLocale();
 
@@ -99,7 +99,9 @@ export const TcIndicator = GObject.registerClass(
             this.menu.addMenuItem(settingsItem);
             settingsItem.connect('activate', this._openPrefs.bind(this));
 
-            this._settingsChangedId = this._settings.connect('changed', () => {
+            this._settingsChangedId = this._settings.connect('changed', (settings, key) => {
+                if (key.startsWith('panel-'))
+                    return;
                 this._settingsChanged();
             });
             this._tts = new AzureTTS(null);
@@ -118,6 +120,9 @@ export const TcIndicator = GObject.registerClass(
                 translateCallback: (text) => {
                     this._translate(text);
                 },
+                checkCallback: () => {
+                    this._translateCheck();
+                },
                 isRtl: (code) => {
                     return this._isRtl(code);
                 }
@@ -131,6 +136,8 @@ export const TcIndicator = GObject.registerClass(
             this._removeKeybindings();
             this._selection.disconnect(this._ownerChangedId);
             this._settings.disconnect(this._settingsChangedId);
+            this._disconnectTranslator();
+            this._translator?.cleanup?.();
             if (this._translateWindow) {
                 this._translateWindow.destroy();
                 this._translateWindow = null;
@@ -215,10 +222,8 @@ export const TcIndicator = GObject.registerClass(
             this._removeKeybindings();
             this._setupKeybindings();
             
-            if (this._translator && this._translateCompleted) {
-                this._translator.disconnect(this._translateCompleted);
-                this._translateCompleted = null;
-            }
+            this._disconnectTranslator();
+            this._translator?.cleanup?.();
             
             if (this._engine != 'Google')
                 this._onProviderChanged();
@@ -226,7 +231,21 @@ export const TcIndicator = GObject.registerClass(
                 this._translator = new GoogleTranslator();
             this._translateCompleted = this._translator.connect('completed',
                 this._onCompleted.bind(this));
-            this._translator.connect('error', (object, error) => { notify(IndicatorName, error); });
+            this._translateError = this._translator.connect('error',
+                this._onTranslationError.bind(this));
+        }
+
+        _disconnectTranslator() {
+            if (!this._translator)
+                return;
+            if (this._translateCompleted) {
+                this._translator.disconnect(this._translateCompleted);
+                this._translateCompleted = null;
+            }
+            if (this._translateError) {
+                this._translator.disconnect(this._translateError);
+                this._translateError = null;
+            }
         }
 
         _onProviderChanged() {
@@ -288,18 +307,22 @@ export const TcIndicator = GObject.registerClass(
         _watchClipboard() {
             this._selection = global.display.get_selection();
             this._clipboard = St.Clipboard.get_default();
-            this._ownerChangedId = this._selection.connect('owner-changed', () => {
-                if (this._enabled) {
-                    let [x, y, mods] = global.get_pointer();
-                    let buttonMask = Clutter.ModifierType.BUTTON1_MASK |
-                        Clutter.ModifierType.BUTTON2_MASK |
-                        Clutter.ModifierType.BUTTON3_MASK |
-                        Clutter.ModifierType.SHIFT_MASK |
-                        Clutter.ModifierType.CONTROL_MASK |
-                        Clutter.ModifierType.SUPER_MASK;
-                    if (buttonMask & mods)
+            this._ownerChangedId = this._selection.connect('owner-changed',
+                (selection, selectionType) => {
+                    if (selectionType !== Meta.SelectionType.SELECTION_PRIMARY)
                         return;
-                    this._clipboardChanged();
+                    if (this._enabled) {
+                        let [x, y, mods] = global.get_pointer();
+                        let buttonMask = Clutter.ModifierType.BUTTON1_MASK |
+                            Clutter.ModifierType.BUTTON2_MASK |
+                            Clutter.ModifierType.BUTTON3_MASK |
+                            Clutter.ModifierType.SHIFT_MASK |
+                            Clutter.ModifierType.CONTROL_MASK |
+                            Clutter.ModifierType.SUPER_MASK;
+                        if (buttonMask & mods)
+                            return;
+                        this._clipboardChanged();
+                    }
                 }
             });
         }
@@ -308,6 +331,8 @@ export const TcIndicator = GObject.registerClass(
             [this._x, this._y] = global.get_pointer();
             this._clipboard.get_text(St.ClipboardType.PRIMARY,
                 (clipboard, text) => {
+                    if (text === this._oldtext)
+                        return;
                     if (text && text != '' &&
                         text[0] != '/' &&
                         //RegExp(/\S+/).exec(text) &&
@@ -327,41 +352,113 @@ export const TcIndicator = GObject.registerClass(
         }
 
         _onCompleted(emitter, result) {
-            // If detecting language, extract the detected language from the result
-            if (this._detectingLanguage) {
-                try {
-                    let json = JSON.parse(result);
-                    let detectedLang = json[2]; // Google Translate API returns the detected language code
-                    // Select the appropriate target language
-                    let targetLang = this._selectTargetLanguage(detectedLang);
+            if (!this._activeRequest)
+                return;
 
-                    if (targetLang === null) {
-                        if (this._translateWindow) {
-                            let [x, y] = [this._x, this._y];
-                            let originalText = this._pendingText;
-                            this._translateWindow.showResult(JSON.stringify([[[originalText, originalText, null, null, 0]], null, detectedLang]), x, y);
-                        }
-                        this._detectingLanguage = false;
-                        this._pendingText = null;
-                        return;
-                    }
-
-                    this._detectingLanguage = false;
-                    let text = this._pendingText;
-                    this._pendingText = null;
-                    this._translator.translate(detectedLang, targetLang, this._proxy, text);
-                    return;
-                } catch (error) {
-                    //log('Failed to parse detection result: ' + error);
-                    this._detectingLanguage = false;
-                    this._pendingText = null;
-                }
+            let request = this._activeRequest;
+            let summary;
+            try {
+                summary = this._engine === 'Google'
+                    ? this._extractGoogleSummary(result)
+                    : { translatedText: result, detectedLanguage: null };
+            } catch (error) {
+                this._onTranslationError(emitter, error.message || String(error));
+                return;
             }
 
-            let [x, y] = [this._x, this._y];
-            if (this._translateWindow) {
-                this._translateWindow.showResult(result, x, y);
+            if (request.kind === 'primary' &&
+                this._engine === 'Google' &&
+                request.sourceLanguage === null &&
+                summary.detectedLanguage &&
+                summary.detectedLanguage === request.targetLanguage &&
+                this._toSecondary &&
+                this._toSecondary !== request.targetLanguage &&
+                !request.retargeted) {
+                request.sourceLanguage = summary.detectedLanguage;
+                request.targetLanguage = this._toSecondary;
+                request.retargeted = true;
+                this._translator.translate(
+                    request.sourceLanguage,
+                    request.targetLanguage,
+                    this._proxy,
+                    request.originalText);
+                return;
             }
+
+            if (request.kind === 'check') {
+                this._activeRequest = null;
+                this._translateWindow?.showCheckResult(
+                    summary.translatedText,
+                    request.targetLanguage);
+                return;
+            }
+
+            request.sourceLanguage = request.sourceLanguage || summary.detectedLanguage;
+            request.mainText = summary.translatedText;
+            request.rawResult = result;
+            request.checkTargetLanguage = this._getCheckTargetLanguage(request);
+            this._primaryContext = request;
+            this._activeRequest = null;
+
+            this._translateWindow?.showResult(result, this._x, this._y, request);
+        }
+
+        _extractGoogleSummary(result) {
+            let json = JSON.parse(result);
+            if (!json?.[0] || !Array.isArray(json[0]))
+                throw new Error(_('Invalid translation result format.'));
+
+            let translatedText = json[0]
+                .filter(item => Array.isArray(item) && item[0])
+                .map(item => item[0].replace(/\n/g, ''))
+                .join('\n');
+            if (!translatedText)
+                throw new Error(_('No translation result.'));
+
+            return {
+                translatedText,
+                detectedLanguage: json[2] || null
+            };
+        }
+
+        _getCheckTargetLanguage(context) {
+            if (context.sourceLanguage && context.sourceLanguage !== 'auto')
+                return context.sourceLanguage;
+            if (context.targetLanguage === this._toPrimary && this._toSecondary)
+                return this._toSecondary;
+            if (context.targetLanguage === this._toSecondary && this._toPrimary)
+                return this._toPrimary;
+            return null;
+        }
+
+        _translateCheck() {
+            let context = this._primaryContext;
+            if (!context?.mainText || !context.checkTargetLanguage)
+                return;
+
+            this._activeRequest = {
+                kind: 'check',
+                originalText: context.mainText,
+                sourceLanguage: context.targetLanguage || 'auto',
+                targetLanguage: context.checkTargetLanguage
+            };
+            this._translateWindow?.showCheckLoading();
+            this._translator.translate(
+                this._activeRequest.sourceLanguage,
+                this._activeRequest.targetLanguage,
+                this._proxy,
+                this._activeRequest.originalText);
+        }
+
+        _onTranslationError(emitter, error) {
+            let message = error?.message || String(error);
+            if (this._activeRequest?.kind === 'check')
+                this._translateWindow?.showCheckError(message);
+            else {
+                notify(IndicatorName, message);
+                this._translateWindow?.showTranslationError(message);
+            }
+            this._activeRequest = null;
         }
 
         _getLocale() {
@@ -370,6 +467,7 @@ export const TcIndicator = GObject.registerClass(
             if (this.locale == 'C')
                 this.locale = 'en';
             this.locale = this.locale.replace('_', '-');
+            return this.locale;
         }
 
         _getCode(lang) {
@@ -509,20 +607,17 @@ export const TcIndicator = GObject.registerClass(
 
         _translate(text) {
             let from = this._settings.get_string(Fields.FROM) || 'auto';
+            let targetLanguage = this._toPrimary || this._toSecondary ||
+                this._settings.get_string(Fields.TO) || this._locale;
 
-            if (from === 'auto' && this._toPrimary && this._toPrimary !== '') {
-                if (this._engine == 'Google')
-                    this._detectingLanguage = true;
-                this._pendingText = text;
-                this._translator.translate('auto', this._toPrimary, this._proxy, text);
-            } else if (from === 'auto' && this._toSecondary && this._toSecondary !== '') {
-                if (this._engine == 'Google')
-                    this._detectingLanguage = true;
-                this._pendingText = text;
-                this._translator.translate('auto', this._toSecondary, this._proxy, text);
-            } else {
-                let targetLang = this._toPrimary || this._toSecondary || this._settings.get_string(Fields.TO) || this._locale;
-                this._translator.translate(from, targetLang, this._proxy, text);
-            }
+            this._primaryContext = null;
+            this._activeRequest = {
+                kind: 'primary',
+                originalText: text,
+                sourceLanguage: from === 'auto' ? null : this._getCode(from),
+                targetLanguage,
+                retargeted: false
+            };
+            this._translator.translate(from, targetLanguage, this._proxy, text);
         }
     });

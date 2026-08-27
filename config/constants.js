@@ -13,7 +13,11 @@ export const Fields = {
     PROXY: 'proxy',
     ENGINE: 'engine',
     LLM_PROVIDER: 'llm-provider',
-    PROVIDER_SETTINGS: 'provider-settings'
+    PROVIDER_SETTINGS: 'provider-settings',
+    PANEL_PINNED: 'panel-pinned',
+    PANEL_X: 'panel-x',
+    PANEL_Y: 'panel-y',
+    PANEL_MONITOR: 'panel-monitor'
 };
 
 export const defaultConfig = {
@@ -21,4 +25,3 @@ export const defaultConfig = {
     'model': '',
     'prompt': 'Translate the following text into {destination_language}. Provide brief explanations for specialized terms in the source text, and include pronunciations for complex words:\n{selected_text}'
 };
-

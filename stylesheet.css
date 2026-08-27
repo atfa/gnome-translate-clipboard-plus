@@ -2,27 +2,72 @@
 .translate-window {
     border-radius: 12px;
     background-color: rgba(32, 32, 32, 1);
+    border: 1px solid rgba(255, 255, 255, 0.32);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
 }
 
 .translate-scroll {
     background-color: rgba(32, 32, 32, 1);
-    border-radius: 12px;
+    border-radius: 0 0 12px 12px;
     color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.32);
-}
-
-.translate-scroll {
-    opacity: 0;
-    width: 0px;
 }
 
 .translate-box {
-    margin: 16px 12px 12px 16px;
+    margin: 10px 12px 12px 12px;
+    spacing: 8px;
+}
+
+.tc-toolbar {
+    height: 42px;
+    padding: 4px 6px 4px 12px;
+    spacing: 4px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.tc-toolbar-title {
+    font-weight: bold;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.tc-tool-button {
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    min-height: 30px;
+    padding: 0;
+    border-radius: 7px;
+    color: #fff;
+    background-color: transparent;
+}
+
+.tc-tool-button:hover,
+.tc-tool-button:focus {
+    background-color: rgba(125, 125, 125, 0.45);
+}
+
+.tc-tool-button:checked {
+    background-color: rgba(53, 132, 228, 0.65);
+}
+
+.tc-result-box {
+    spacing: 8px;
+}
+
+.tc-result-section {
+    padding: 8px;
+    spacing: 4px;
+    border-radius: 8px;
+    background-color: rgba(96, 96, 96, 0.28);
+}
+
+.tc-result-heading {
+    font-size: 0.85em;
+    font-weight: bold;
+    color: rgba(255, 255, 255, 0.65);
 }
 
 .tc-title-label {
-    font-weight: bold;
-    padding: 5px;
+    padding: 2px;
 }
 
 .tc-section-box {
@@ -110,4 +155,13 @@
     color: rgba(255, 100, 100, 1);
     padding: 12px;
     text-align: center;
+}
+
+.tc-check-error .tc-title-label {
+    color: rgba(255, 120, 120, 1);
+}
+
+.tc-loading-text {
+    padding: 24px 8px;
+    color: rgba(255, 255, 255, 0.75);
 }

@@ -118,5 +118,25 @@
         LLM service provider (e.g. OpenAI, openrouter, etc.)
       </description>
     </key>
+    <key name="panel-pinned" type="b">
+      <default>false</default>
+      <summary>Pin translation panel</summary>
+      <description>Keep the translation panel visible and restore its saved position.</description>
+    </key>
+    <key name="panel-x" type="i">
+      <default>0</default>
+      <summary>Translation panel X position</summary>
+      <description>Saved horizontal position for the pinned translation panel.</description>
+    </key>
+    <key name="panel-y" type="i">
+      <default>0</default>
+      <summary>Translation panel Y position</summary>
+      <description>Saved vertical position for the pinned translation panel.</description>
+    </key>
+    <key name="panel-monitor" type="i">
+      <default>-1</default>
+      <summary>Translation panel monitor</summary>
+      <description>Saved monitor index for the pinned translation panel.</description>
+    </key>
   </schema>
 </schemalist>
