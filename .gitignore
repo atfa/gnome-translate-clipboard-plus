@@ -1,0 +1,8 @@
+# Generated locally from the extension settings schema.
+schemas/gschemas.compiled
+
+# GNOME Shell and editor artifacts.
+*.zip
+*~
+.idea/
+.vscode/
