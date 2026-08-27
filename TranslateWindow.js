@@ -35,7 +35,6 @@ export const TranslateWindow = GObject.registerClass(
             this._scroll = null;
             this._contentBox = null;
             this._searchEntry = null;
-            this._copyButton = null;
             this._checkButton = null;
             this._pinButton = null;
             this._pinIcon = null;
@@ -87,7 +86,6 @@ export const TranslateWindow = GObject.registerClass(
 
             this._resultContext = null;
             this._clearResultContent();
-            this._setButtonEnabled(this._copyButton, false);
             this._setButtonEnabled(this._checkButton, false);
 
             this._loadingLabel = this._createWrappedLabel(
@@ -109,7 +107,6 @@ export const TranslateWindow = GObject.registerClass(
             this._clearResultContent();
             this._resultContext = context;
             this._parseResult(result, context);
-            this._setButtonEnabled(this._copyButton, Boolean(context.mainText));
             this._setButtonEnabled(
                 this._checkButton,
                 Boolean(context.mainText && context.checkTargetLanguage));
@@ -170,7 +167,6 @@ export const TranslateWindow = GObject.registerClass(
             this._contentBox.add_child(this._resultBox);
             this._resultBox.add_child(this._createResultSection(
                 _('Error'), message, null, false, false, 'tc-check-error'));
-            this._setButtonEnabled(this._copyButton, false);
             this._setButtonEnabled(this._checkButton, false);
             this._refreshGeometry();
             this._updateHideBehavior();
@@ -216,8 +212,6 @@ export const TranslateWindow = GObject.registerClass(
             });
             toolbar.add_child(dragHandle);
 
-            this._copyButton = this._createToolButton(
-                'edit-copy-symbolic', _('Copy translation'), () => this._copyResult());
             this._checkButton = this._createToolButton(
                 'object-flip-horizontal-symbolic', _('Check translation'),
                 () => this._checkCallback?.());
@@ -227,7 +221,6 @@ export const TranslateWindow = GObject.registerClass(
             let closeButton = this._createToolButton(
                 'window-close-symbolic', _('Close'), () => this._close());
 
-            toolbar.add_child(this._copyButton);
             toolbar.add_child(this._checkButton);
             toolbar.add_child(this._pinButton);
             toolbar.add_child(closeButton);
@@ -288,7 +281,6 @@ export const TranslateWindow = GObject.registerClass(
             this._contentBox.add_child(searchBox);
 
             this._updatePinAppearance();
-            this._setButtonEnabled(this._copyButton, false);
             this._setButtonEnabled(this._checkButton, false);
             Main.layoutManager.addChrome(this._actor);
         }
@@ -313,12 +305,11 @@ export const TranslateWindow = GObject.registerClass(
             button.opacity = enabled ? 255 : 96;
         }
 
-        _copyResult() {
-            let text = this._resultContext?.mainText;
+        _copyText(text) {
             if (!text)
                 return;
             St.Clipboard.get_default().set_text(St.ClipboardType.CLIPBOARD, text);
-            notify(IndicatorName, _('Translation copied to clipboard.'));
+            notify(IndicatorName, _('Text copied to clipboard.'));
         }
 
         _togglePinned() {
@@ -539,14 +530,35 @@ export const TranslateWindow = GObject.registerClass(
             return label;
         }
 
+        _createCopyButton(text) {
+            let button = new St.Button({
+                style_class: 'tc-result-action-button',
+                child: new St.Icon({
+                    icon_name: 'edit-copy-symbolic',
+                    icon_size: 16
+                }),
+                x_expand: false,
+                y_expand: false,
+                x_align: Clutter.ActorAlign.END,
+                y_align: Clutter.ActorAlign.CENTER,
+                accessible_name: _('Copy text')
+            });
+            button.connect('clicked', () => this._copyText(text));
+            return button;
+        }
+
         _createPlayButton(text) {
             let button = new St.Button({
-                style_class: 'tc-play-button',
+                style_class: 'tc-result-action-button',
                 child: new St.Icon({
                     gicon: Gio.icon_new_for_string(`${this._extension.path}/icons/play.svg`),
                     style_class: 'popup-menu-icon',
                     icon_size: 16
                 }),
+                x_expand: false,
+                y_expand: false,
+                x_align: Clutter.ActorAlign.END,
+                y_align: Clutter.ActorAlign.CENTER,
                 accessible_name: _('Play audio')
             });
             button.connect('clicked', () => this._tts.playAudio(text));
@@ -554,7 +566,7 @@ export const TranslateWindow = GObject.registerClass(
         }
 
         _createResultSection(title, text, languageCode, useMarkup = false,
-            showPlayButton = true, extraClass = '') {
+            showActions = true, extraClass = '', copyText = text) {
             let section = new St.BoxLayout({
                 vertical: true,
                 style_class: `tc-result-section ${extraClass}`.trim(),
@@ -562,14 +574,22 @@ export const TranslateWindow = GObject.registerClass(
             });
             section.add_child(this._createWrappedLabel(title, 'tc-result-heading'));
 
-            let row = new St.BoxLayout({style_class: 'tc-text-with-play', x_expand: true});
             let label = this._createWrappedLabel(text, 'tc-title-label', useMarkup);
             if (languageCode && this._isRtl(languageCode))
                 label.add_style_pseudo_class('rtl');
-            row.add_child(label);
-            if (showPlayButton && text)
-                row.add_child(this._createPlayButton(text));
-            section.add_child(row);
+            section.add_child(label);
+
+            if (showActions && text) {
+                let actions = new St.BoxLayout({
+                    style_class: 'tc-result-actions',
+                    x_align: Clutter.ActorAlign.END,
+                    x_expand: false,
+                    y_expand: false
+                });
+                actions.add_child(this._createCopyButton(copyText));
+                actions.add_child(this._createPlayButton(text));
+                section.add_child(actions);
+            }
             return section;
         }
 
@@ -602,10 +622,11 @@ export const TranslateWindow = GObject.registerClass(
                     (targetPhonetic ? `\n(${targetPhonetic})` : '');
 
                 this._resultBox.add_child(this._createResultSection(
-                    _('Original'), originalDisplay, context.sourceLanguage, false));
+                    _('Original'), originalDisplay, context.sourceLanguage,
+                    false, true, '', context.originalText));
                 this._resultBox.add_child(this._createResultSection(
                     _('Translation'), translationDisplay, context.targetLanguage,
-                    this._engine !== 'Google'));
+                    this._engine !== 'Google', true, '', context.mainText));
 
                 if (this._engine === 'Google' && !this._briefMode)
                     this._appendGoogleDetails(json, context);

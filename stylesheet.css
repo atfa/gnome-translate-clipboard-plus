@@ -109,35 +109,32 @@
     icon-size: 16px;
 }
 
-.tc-text-with-play {
-    spacing: 6px;
-    width: 100%;
+.tc-result-actions {
+    spacing: 4px;
+    height: 28px;
 }
 
-.tc-text-with-play .tc-title-label {
-    flex: 1;
-}
-
-.tc-play-button {
+.tc-result-action-button {
     padding: 0px;
-    border-radius: 14px;
+    border-radius: 7px;
     width: 28px;
     height: 28px;
     min-width: 28px;
     min-height: 28px;
     max-width: 28px;
     max-height: 28px;
+    color: #fff;
     background-color: rgba(125, 125, 125, 0.3);
 }
 
-.tc-play-button:hover {
+.tc-result-action-button:hover,
+.tc-result-action-button:focus {
     background-color: rgba(125, 125, 125, 0.6);
 }
 
-.tc-play-button .popup-menu-icon {
+.tc-result-action-button .popup-menu-icon {
     icon-size: 16px;
     color: #fff;
-    padding: 6px;
 }
 
 .tc-language-label {
