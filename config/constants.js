@@ -13,6 +13,8 @@ export const Fields = {
     VISION_ENDPOINT: 'vision-endpoint',
     VISION_MODEL: 'vision-model',
     VISION_API_KEY: 'vision-api-key',
+    CHECK_ENABLED: 'check-enabled',
+    LIGHT_MODE: 'light-mode',
     TTS_ENGINE: 'voice',
     PROXY: 'proxy',
     ENGINE: 'engine',

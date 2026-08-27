@@ -35,6 +35,7 @@ export const TranslateWindow = GObject.registerClass(
             this._scroll = null;
             this._contentBox = null;
             this._searchEntry = null;
+            this._lightButton = null;
             this._checkButton = null;
             this._pinButton = null;
             this._pinIcon = null;
@@ -47,6 +48,8 @@ export const TranslateWindow = GObject.registerClass(
             this._resultContext = null;
             this._monitorIndex = 0;
             this._pinned = this._settings.get_boolean('panel-pinned');
+            this._checkEnabled = this._settings.get_boolean('check-enabled');
+            this._lightMode = this._settings.get_boolean('light-mode');
         }
 
         destroy() {
@@ -86,7 +89,6 @@ export const TranslateWindow = GObject.registerClass(
 
             this._resultContext = null;
             this._clearResultContent();
-            this._setButtonEnabled(this._checkButton, false);
 
             this._loadingLabel = this._createWrappedLabel(
                 message, 'tc-loading-text');
@@ -107,9 +109,6 @@ export const TranslateWindow = GObject.registerClass(
             this._clearResultContent();
             this._resultContext = context;
             this._parseResult(result, context);
-            this._setButtonEnabled(
-                this._checkButton,
-                Boolean(context.mainText && context.checkTargetLanguage));
 
             if (!this._actor.visible)
                 this._placeForShow(x, y);
@@ -126,32 +125,29 @@ export const TranslateWindow = GObject.registerClass(
             this._checkSection = this._createResultSection(
                 _('Check result'), _('Checking ...'), null, false, false);
             this._resultBox.add_child(this._checkSection);
-            this._setButtonEnabled(this._checkButton, false);
             this._refreshGeometry();
         }
 
         showCheckResult(text, languageCode) {
-            if (!this._resultBox || !this._resultContext)
+            if (!this._checkEnabled || !this._resultBox || !this._resultContext)
                 return;
             this._removeCheckSection();
             this._checkSection = this._createResultSection(
                 _('Check result'), text, languageCode, this._engine !== 'Google');
             this._resultBox.add_child(this._checkSection);
-            this._setButtonEnabled(this._checkButton, true);
             this._refreshGeometry();
             this._clampCurrentPosition();
             this._updateHideBehavior();
         }
 
         showCheckError(message) {
-            if (!this._resultBox)
+            if (!this._checkEnabled || !this._resultBox)
                 return;
             this._removeCheckSection();
             this._checkSection = this._createResultSection(
                 _('Check result'), _('Check failed: ') + message, null, false, false,
                 'tc-check-error');
             this._resultBox.add_child(this._checkSection);
-            this._setButtonEnabled(this._checkButton, true);
             this._refreshGeometry();
             this._updateHideBehavior();
         }
@@ -167,7 +163,6 @@ export const TranslateWindow = GObject.registerClass(
             this._contentBox.add_child(this._resultBox);
             this._resultBox.add_child(this._createResultSection(
                 _('Error'), message, null, false, false, 'tc-check-error'));
-            this._setButtonEnabled(this._checkButton, false);
             this._refreshGeometry();
             this._updateHideBehavior();
         }
@@ -185,6 +180,10 @@ export const TranslateWindow = GObject.registerClass(
                 this._autoHideMode = params.autoHideMode;
             if (params.locale !== undefined)
                 this._locale = params.locale;
+
+            this._checkEnabled = this._settings.get_boolean('check-enabled');
+            this._lightMode = this._settings.get_boolean('light-mode');
+            this._updateToggleAppearance();
 
             if (this._actor?.visible)
                 this._updateHideBehavior();
@@ -212,15 +211,19 @@ export const TranslateWindow = GObject.registerClass(
             });
             toolbar.add_child(dragHandle);
 
+            this._lightButton = this._createToolButton(
+                'weather-clear-symbolic', _('Light mode'),
+                () => this._toggleLightMode());
             this._checkButton = this._createToolButton(
-                'object-flip-horizontal-symbolic', _('Check translation'),
-                () => this._checkCallback?.());
+                'object-flip-horizontal-symbolic', _('Automatically check translation'),
+                () => this._toggleCheckEnabled());
             this._pinButton = this._createToolButton(
                 'view-pin-symbolic', _('Pin panel'), () => this._togglePinned());
             this._pinIcon = this._pinButton.child;
             let closeButton = this._createToolButton(
                 'window-close-symbolic', _('Close'), () => this._close());
 
+            toolbar.add_child(this._lightButton);
             toolbar.add_child(this._checkButton);
             toolbar.add_child(this._pinButton);
             toolbar.add_child(closeButton);
@@ -281,7 +284,7 @@ export const TranslateWindow = GObject.registerClass(
             this._contentBox.add_child(searchBox);
 
             this._updatePinAppearance();
-            this._setButtonEnabled(this._checkButton, false);
+            this._updateToggleAppearance();
             Main.layoutManager.addChrome(this._actor);
         }
 
@@ -297,19 +300,50 @@ export const TranslateWindow = GObject.registerClass(
             return button;
         }
 
-        _setButtonEnabled(button, enabled) {
-            if (!button)
-                return;
-            button.reactive = enabled;
-            button.can_focus = enabled;
-            button.opacity = enabled ? 255 : 96;
-        }
-
         _copyText(text) {
             if (!text)
                 return;
             St.Clipboard.get_default().set_text(St.ClipboardType.CLIPBOARD, text);
             notify(IndicatorName, _('Text copied to clipboard.'));
+        }
+
+        _toggleLightMode() {
+            this._lightMode = !this._lightMode;
+            this._settings.set_boolean('light-mode', this._lightMode);
+            this._updateToggleAppearance();
+        }
+
+        _toggleCheckEnabled() {
+            this._checkEnabled = !this._checkEnabled;
+            this._settings.set_boolean('check-enabled', this._checkEnabled);
+            this._updateToggleAppearance();
+
+            if (this._checkEnabled)
+                this._checkCallback?.();
+            else {
+                this._removeCheckSection();
+                this._refreshGeometry();
+            }
+        }
+
+        _updateToggleAppearance() {
+            if (this._actor) {
+                if (this._lightMode)
+                    this._actor.add_style_class_name('tc-light-mode');
+                else
+                    this._actor.remove_style_class_name('tc-light-mode');
+            }
+            this._setToggleChecked(this._lightButton, this._lightMode);
+            this._setToggleChecked(this._checkButton, this._checkEnabled);
+        }
+
+        _setToggleChecked(button, checked) {
+            if (!button)
+                return;
+            if (checked)
+                button.add_style_pseudo_class('checked');
+            else
+                button.remove_style_pseudo_class('checked');
         }
 
         _togglePinned() {
@@ -551,8 +585,7 @@ export const TranslateWindow = GObject.registerClass(
             let button = new St.Button({
                 style_class: 'tc-result-action-button',
                 child: new St.Icon({
-                    gicon: Gio.icon_new_for_string(`${this._extension.path}/icons/play.svg`),
-                    style_class: 'popup-menu-icon',
+                    icon_name: 'media-playback-start-symbolic',
                     icon_size: 16
                 }),
                 x_expand: false,

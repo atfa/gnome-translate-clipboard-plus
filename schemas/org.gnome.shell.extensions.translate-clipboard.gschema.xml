@@ -103,6 +103,18 @@
       <description>API key sent to the OpenAI-compatible vision service.</description>
     </key>
 
+    <key name="check-enabled" type="b">
+      <default>false</default>
+      <summary>Automatically check every translation</summary>
+      <description>Run a reverse translation after every primary translation.</description>
+    </key>
+
+    <key name="light-mode" type="b">
+      <default>false</default>
+      <summary>Use the light translation panel theme</summary>
+      <description>Display the translation panel with a persistent light color scheme.</description>
+    </key>
+
     <key name="voice" type="s">
       <default>'Microsoft Server Speech Text to Speech Voice (zh-CN, XiaoXiaoNeural)'</default>
       <summary>TTS engine</summary>

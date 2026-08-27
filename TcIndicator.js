@@ -127,6 +127,10 @@ export const TcIndicator = GObject.registerClass(
             this._settingsChangedId = this._settings.connect('changed', (settings, key) => {
                 if (key.startsWith('panel-'))
                     return;
+                if (key === Fields.CHECK_ENABLED || key === Fields.LIGHT_MODE) {
+                    this._translateWindow?.updateSettings({});
+                    return;
+                }
                 this._settingsChanged();
             });
             this._tts = new AzureTTS(null);
@@ -514,6 +518,9 @@ export const TcIndicator = GObject.registerClass(
             this._activeRequest = null;
 
             this._translateWindow?.showResult(result, this._x, this._y, request);
+            if (this._settings.get_boolean(Fields.CHECK_ENABLED) &&
+                request.checkTargetLanguage)
+                this._translateCheck();
         }
 
         _extractGoogleSummary(result) {

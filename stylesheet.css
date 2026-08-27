@@ -162,3 +162,82 @@
     padding: 24px 8px;
     color: rgba(255, 255, 255, 0.75);
 }
+
+/* Light mode: neutral surfaces, strong text contrast, and restrained blue
+ * accents keep long translations readable without looking washed out. */
+.translate-window.tc-light-mode {
+    background-color: #f5f7fa;
+    border-color: #c9d0d9;
+    box-shadow: 0 8px 28px rgba(28, 36, 48, 0.22);
+}
+
+.tc-light-mode .translate-scroll {
+    background-color: #f5f7fa;
+    color: #20252c;
+}
+
+.tc-light-mode .tc-toolbar {
+    background-color: #ffffff;
+    border-bottom-color: #d8dde5;
+}
+
+.tc-light-mode .tc-toolbar-title {
+    color: #20252c;
+}
+
+.tc-light-mode .tc-tool-button {
+    color: #3b4552;
+}
+
+.tc-light-mode .tc-tool-button:hover,
+.tc-light-mode .tc-tool-button:focus {
+    background-color: #e6eaf0;
+}
+
+.tc-light-mode .tc-tool-button:checked {
+    color: #ffffff;
+    background-color: #3584e4;
+}
+
+.tc-light-mode .tc-search-entry {
+    color: #20252c;
+    background-color: #ffffff;
+    border-color: #c7ced8;
+    selection-background-color: #3584e4;
+    selected-color: #ffffff;
+}
+
+.tc-light-mode .tc-result-section {
+    color: #20252c;
+    background-color: #ffffff;
+    border: 1px solid #dce1e8;
+    box-shadow: 0 1px 3px rgba(28, 36, 48, 0.08);
+}
+
+.tc-light-mode .tc-result-heading {
+    color: #626c78;
+}
+
+.tc-light-mode .tc-title-label,
+.tc-light-mode .tc-section-label,
+.tc-light-mode .tc-normal-label {
+    color: #20252c;
+}
+
+.tc-light-mode .tc-result-action-button {
+    color: #354052;
+    background-color: #edf0f4;
+}
+
+.tc-light-mode .tc-result-action-button:hover,
+.tc-light-mode .tc-result-action-button:focus {
+    background-color: #dfe4eb;
+}
+
+.tc-light-mode .tc-loading-text {
+    color: #626c78;
+}
+
+.tc-light-mode .tc-check-error .tc-title-label {
+    color: #b4232e;
+}
