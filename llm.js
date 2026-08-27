@@ -161,7 +161,7 @@ export const providers = {
     "custom": {
         name: "Custom (compatible with OpenAI)",
         models: [],
-        endpoint: "https://",
+        endpoint: "http://127.0.0.1:4000/v1/chat/completions",
         signup: "",
         getApiKey: function () {
             return GLib.getenv("CUSTOM_API_KEY");
