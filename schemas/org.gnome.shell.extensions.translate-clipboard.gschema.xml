@@ -79,6 +79,30 @@
       </description>
     </key>
 
+    <key name="translate-screenshot" type="as">
+      <default><![CDATA[['<Super><Shift>D']]]></default>
+      <summary>Capture an area, recognize its text, and translate it.</summary>
+      <description>Shortcut keys for screenshot translation.</description>
+    </key>
+
+    <key name="vision-endpoint" type="s">
+      <default>'http://127.0.0.1:52625/v1'</default>
+      <summary>Vision model endpoint</summary>
+      <description>Base URL or chat completions URL of an OpenAI-compatible vision service.</description>
+    </key>
+
+    <key name="vision-model" type="s">
+      <default>'qwen3vl-it:4b'</default>
+      <summary>Vision model</summary>
+      <description>Model used to recognize text in screenshots.</description>
+    </key>
+
+    <key name="vision-api-key" type="s">
+      <default>'dummy'</default>
+      <summary>Vision model API key</summary>
+      <description>API key sent to the OpenAI-compatible vision service.</description>
+    </key>
+
     <key name="voice" type="s">
       <default>'Microsoft Server Speech Text to Speech Voice (zh-CN, XiaoXiaoNeural)'</default>
       <summary>TTS engine</summary>

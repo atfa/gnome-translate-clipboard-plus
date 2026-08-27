@@ -34,6 +34,11 @@ class GeneralPage extends Adw.PreferencesPage {
 
         this._miscGroup = new Adw.PreferencesGroup();
         this.add(this._miscGroup);
+        this._visionGroup = new Adw.PreferencesGroup({
+            title: _('Screenshot translation'),
+            description: _('Recognize screenshot text with an OpenAI-compatible vision model, then translate it with the selected translation engine.')
+        });
+        this.add(this._visionGroup);
 
         this._addSwitch({key : 'enable-trans',
                         label : _('Enable or disable translation'),
@@ -50,6 +55,7 @@ class GeneralPage extends Adw.PreferencesPage {
         this._addAutoHideModeRow();
 
         this._addKeybindingRow();
+        this._addVisionSettingsRows();
 
         this._addLanguageSettingsRow();
         this._addVoicesRow();
@@ -124,7 +130,7 @@ class GeneralPage extends Adw.PreferencesPage {
         applyButton.connect('clicked', () => {
             if (capturedAccel !== null)
                 this._settings.set_strv(key, [capturedAccel]);
-            this._shortcutLabel.set_label(capturedAccel || _('Disabled'));
+            shortcutLabel.set_label(capturedAccel || _('Disabled'));
             dialog.close();
         });
 
@@ -180,8 +186,6 @@ class GeneralPage extends Adw.PreferencesPage {
             halign : Gtk.Align.END,
             valign : Gtk.Align.CENTER,
         });
-        this._shortcutLabel = shortcutLabel;
-        //shortcut.get_style_context().add_class('dim-label');
         const editButton = new Gtk.Button({
             icon_name: 'document-edit-symbolic',
             valign: Gtk.Align.CENTER
@@ -198,6 +202,57 @@ class GeneralPage extends Adw.PreferencesPage {
         row.add_suffix(shortcutLabel);
         row.add_suffix(editButton);
         this._miscGroup.add(row);
+
+        this._addShortcutRow(
+            Fields.TRANS_SCREENSHOT,
+            _('Screenshot and translate'),
+            _('Drag to select an area, recognize its text, and translate it.'),
+            this._visionGroup);
+    }
+
+    _addShortcutRow(field, title, subtitle, group) {
+        const current = this._settings.get_strv(field)[0] || '';
+        const [ok, key, mods] = Gtk.accelerator_parse(current);
+        const shortcutLabel = new Gtk.Label({
+            label: ok ? Gtk.accelerator_name(key, mods) : _('Disabled'),
+            halign: Gtk.Align.END,
+            valign: Gtk.Align.CENTER,
+        });
+        const editButton = new Gtk.Button({
+            icon_name: 'document-edit-symbolic',
+            valign: Gtk.Align.CENTER,
+        });
+        const row = new Adw.ActionRow({title, subtitle});
+        editButton.connect('clicked', () => {
+            this._editShortcut(field, row, shortcutLabel);
+        });
+        row.add_suffix(shortcutLabel);
+        row.add_suffix(editButton);
+        group.add(row);
+    }
+
+    _addVisionSettingsRows() {
+        const endpointRow = new Adw.EntryRow({
+            title: _('Vision endpoint'),
+            text: this._settings.get_string(Fields.VISION_ENDPOINT),
+        });
+        const modelRow = new Adw.EntryRow({
+            title: _('Vision model'),
+            text: this._settings.get_string(Fields.VISION_MODEL),
+        });
+        const apiKeyRow = new Adw.PasswordEntryRow({
+            title: _('Vision API key'),
+            text: this._settings.get_string(Fields.VISION_API_KEY),
+        });
+        this._settings.bind(
+            Fields.VISION_ENDPOINT, endpointRow, 'text', Gio.SettingsBindFlags.DEFAULT);
+        this._settings.bind(
+            Fields.VISION_MODEL, modelRow, 'text', Gio.SettingsBindFlags.DEFAULT);
+        this._settings.bind(
+            Fields.VISION_API_KEY, apiKeyRow, 'text', Gio.SettingsBindFlags.DEFAULT);
+        this._visionGroup.add(endpointRow);
+        this._visionGroup.add(modelRow);
+        this._visionGroup.add(apiKeyRow);
     }
 
     _getShortName(name){

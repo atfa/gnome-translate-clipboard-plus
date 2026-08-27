@@ -57,12 +57,33 @@ export const TranslateWindow = GObject.registerClass(
             this._actor = null;
         }
 
+        hideForCapture() {
+            const wasVisible = Boolean(this._actor?.visible);
+            this._removeClickHandler();
+            this._actor?.hide();
+            return wasVisible;
+        }
+
+        restoreAfterCancelledCapture(wasVisible) {
+            if (!wasVisible || !this._actor)
+                return;
+            this._actor.show();
+            this._updateHideBehavior();
+        }
+
         showLoading(x, y, text) {
+            this._showLoading(x, y, text, _('Translating ...'));
+        }
+
+        showRecognitionLoading(x, y) {
+            this._showLoading(x, y, '', _('Recognizing screenshot text ...'));
+        }
+
+        _showLoading(x, y, text, message) {
             if (!this._actor)
                 this._createWindow();
 
-            if (text)
-                this._searchEntry.set_text(text);
+            this._searchEntry.set_text(text || '');
 
             this._resultContext = null;
             this._clearResultContent();
@@ -70,7 +91,8 @@ export const TranslateWindow = GObject.registerClass(
             this._setButtonEnabled(this._checkButton, false);
 
             this._loadingLabel = this._createWrappedLabel(
-                _('Translating ...'), 'tc-loading-text');
+                message, 'tc-loading-text');
+            this._loadingMessage = message.replace(/\.*$/, '').trim();
             this._loadingLabel.x_align = Clutter.ActorAlign.CENTER;
             this._contentBox.add_child(this._loadingLabel);
             this._startLoadingAnimation();
@@ -429,7 +451,7 @@ export const TranslateWindow = GObject.registerClass(
                         return GLib.SOURCE_REMOVE;
                     }
                     dotCount = (dotCount + 1) % 4;
-                    this._loadingLabel.text = _('Translating ...') + '.'.repeat(dotCount);
+                    this._loadingLabel.text = this._loadingMessage + '.'.repeat(dotCount);
                     return GLib.SOURCE_CONTINUE;
                 });
             GLib.Source.set_name_by_id(

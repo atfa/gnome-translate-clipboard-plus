@@ -9,6 +9,7 @@ import Meta from 'gi://Meta';
 import Shell from 'gi://Shell';
 
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+import {SelectArea} from 'resource:///org/gnome/shell/ui/screenshot.js';
 import { gettext as _ } from 'resource:///org/gnome/shell/extensions/extension.js';
 
 import { Button } from 'resource:///org/gnome/shell/ui/panelMenu.js';
@@ -23,6 +24,7 @@ import { GoogleTranslator } from './google.js';
 import { providers as Providers, AiTranslator } from './llm.js';
 import { Fields, defaultConfig } from './config/constants.js';
 import { TranslateWindow } from './TranslateWindow.js';
+import {VisionRecognizer} from './vision.js';
 
 const IndicatorName = 'Translate Clipboard';
 
@@ -47,6 +49,8 @@ export const TcIndicator = GObject.registerClass(
             this._briefMode = this._settings.get_boolean(Fields.BRIEF_MODE);
             this._activeRequest = null;
             this._primaryContext = null;
+            this._visionRequestActive = false;
+            this._keybindingsRegistered = false;
 
             this._locale = this._getLocale();
 
@@ -78,6 +82,10 @@ export const TcIndicator = GObject.registerClass(
             this.menu.addMenuItem(item1);
             this._briefModeItem = item1;
 
+            let screenshotItem = new PopupMenu.PopupMenuItem(_('Screenshot and translate'));
+            screenshotItem.connect('activate', () => this._translateScreenshot());
+            this.menu.addMenuItem(screenshotItem);
+
             let keybind = new PopupMenu.PopupBaseMenuItem({
                 reactive: false,
                 can_focus: false
@@ -87,13 +95,30 @@ export const TcIndicator = GObject.registerClass(
                 x_align: Clutter.ActorAlign.START
             }));
             let key0 = this._settings.get_strv(Fields.TRANS_SELECTED)[0];
-            keybind.add_child(new St.Label({
+            this._selectedKeyLabel = new St.Label({
                 text: key0,
                 x_expand: true,
                 x_align: Clutter.ActorAlign.END
-            }));
+            });
+            keybind.add_child(this._selectedKeyLabel);
 
             this.menu.addMenuItem(keybind);
+
+            let screenshotKeybind = new PopupMenu.PopupBaseMenuItem({
+                reactive: false,
+                can_focus: false
+            });
+            screenshotKeybind.add_child(new St.Label({
+                text: _('Screenshot translation'),
+                x_align: Clutter.ActorAlign.START
+            }));
+            this._screenshotKeyLabel = new St.Label({
+                text: this._settings.get_strv(Fields.TRANS_SCREENSHOT)[0] || _('Disabled'),
+                x_expand: true,
+                x_align: Clutter.ActorAlign.END
+            });
+            screenshotKeybind.add_child(this._screenshotKeyLabel);
+            this.menu.addMenuItem(screenshotKeybind);
 
             let settingsItem = new PopupMenu.PopupMenuItem('Settings');
             this.menu.addMenuItem(settingsItem);
@@ -106,6 +131,11 @@ export const TcIndicator = GObject.registerClass(
             });
             this._tts = new AzureTTS(null);
             this._tts.engine = this._ttsEngine;
+            this._visionRecognizer = new VisionRecognizer(this._settings);
+            this._visionCompletedId = this._visionRecognizer.connect(
+                'completed', this._onVisionCompleted.bind(this));
+            this._visionErrorId = this._visionRecognizer.connect(
+                'error', this._onVisionError.bind(this));
             
             this._translateWindow = new TranslateWindow({
                 extension: this._extension,
@@ -138,6 +168,14 @@ export const TcIndicator = GObject.registerClass(
             this._settings.disconnect(this._settingsChangedId);
             this._disconnectTranslator();
             this._translator?.cleanup?.();
+            if (this._visionRecognizer) {
+                if (this._visionCompletedId)
+                    this._visionRecognizer.disconnect(this._visionCompletedId);
+                if (this._visionErrorId)
+                    this._visionRecognizer.disconnect(this._visionErrorId);
+                this._visionRecognizer.cleanup();
+                this._visionRecognizer = null;
+            }
             if (this._translateWindow) {
                 this._translateWindow.destroy();
                 this._translateWindow = null;
@@ -163,6 +201,10 @@ export const TcIndicator = GObject.registerClass(
             this._tts.engine = this._ttsEngine;
             this._proxy = this._settings.get_string(Fields.PROXY);
             this._engine = this._settings.get_string(Fields.ENGINE);
+            this._selectedKeyLabel.text =
+                this._settings.get_strv(Fields.TRANS_SELECTED)[0] || _('Disabled');
+            this._screenshotKeyLabel.text =
+                this._settings.get_strv(Fields.TRANS_SCREENSHOT)[0] || _('Disabled');
 
             if (this._translateWindow) {
                 this._translateWindow.updateSettings({
@@ -270,7 +312,11 @@ export const TcIndicator = GObject.registerClass(
         }
 
         _removeKeybindings() {
+            if (!this._keybindingsRegistered)
+                return;
             Main.wm.removeKeybinding('translate-selected-text');
+            Main.wm.removeKeybinding('translate-screenshot');
+            this._keybindingsRegistered = false;
         }
 
         _setupKeybindings() {
@@ -280,6 +326,73 @@ export const TcIndicator = GObject.registerClass(
                 Shell.ActionMode.NORMAL |
                 Shell.ActionMode.POPUP,
                 this._translateSelected.bind(this));
+            Main.wm.addKeybinding('translate-screenshot',
+                this._settings,
+                Meta.KeyBindingFlags.IGNORE_AUTOREPEAT,
+                Shell.ActionMode.NORMAL |
+                Shell.ActionMode.POPUP,
+                this._translateScreenshot.bind(this));
+            this._keybindingsRegistered = true;
+        }
+
+        async _translateScreenshot() {
+            if (this._visionRequestActive)
+                return;
+
+            const panelWasVisible = this._translateWindow?.hideForCapture() || false;
+            try {
+                const area = await new SelectArea().selectAsync();
+                if (!area || area.width < 2 || area.height < 2) {
+                    this._translateWindow?.restoreAfterCancelledCapture(panelWasVisible);
+                    return;
+                }
+
+                this._x = area.x + area.width / 2;
+                this._y = area.y + area.height / 2;
+
+                const stream = Gio.MemoryOutputStream.new_resizable();
+                const screenshot = new Shell.Screenshot();
+                await screenshot.screenshot_area(
+                    area.x, area.y, area.width, area.height, stream);
+                stream.close(null);
+
+                this._translateWindow?.showRecognitionLoading(this._x, this._y);
+                this._visionRequestActive = true;
+                this._visionRecognizer.recognize(stream.steal_as_bytes());
+            } catch (error) {
+                this._visionRequestActive = false;
+                if (error.matches?.(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED)) {
+                    this._translateWindow?.restoreAfterCancelledCapture(panelWasVisible);
+                } else {
+                    const message = error.message || String(error);
+                    const [x, y] = global.get_pointer();
+                    this._translateWindow?.showRecognitionLoading(x, y);
+                    notify(IndicatorName, message);
+                    this._translateWindow?.showTranslationError(message);
+                }
+            }
+        }
+
+        _onVisionCompleted(recognizer, text) {
+            if (!this._visionRequestActive)
+                return;
+            this._visionRequestActive = false;
+            const recognizedText = text.trim();
+            if (!recognizedText) {
+                this._onVisionError(recognizer, _('No text was recognized in the screenshot.'));
+                return;
+            }
+            this._oldtext = recognizedText;
+            this._translateWindow?.showLoading(this._x, this._y, recognizedText);
+            this._translate(recognizedText);
+        }
+
+        _onVisionError(recognizer, error) {
+            this._visionRequestActive = false;
+            const message = _('Screenshot recognition failed: ') +
+                (error?.message || String(error));
+            notify(IndicatorName, message);
+            this._translateWindow?.showTranslationError(message);
         }
 
         _translateSelected() {
