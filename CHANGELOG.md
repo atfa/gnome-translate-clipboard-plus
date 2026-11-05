@@ -4,6 +4,24 @@
 
 ### Fixed
 
+- The Chinese interface was only partly translated, and part of it could not be
+  translated at all. Two separate causes: the shipped `locale/zh_CN` catalog was
+  the one imported with upstream v37 (`f004bc0`) and had never been refreshed, so
+  39 of the strings the Plus edition added (screenshot OCR, the About page, the
+  panel toolbar, the reverse-check section) had no entry and rendered in English;
+  and six UI labels were never wrapped in `gettext()`, so no catalog could ever
+  cover them — the `Set Shortcut` dialog title, the `Translate the selected
+  text` row, the API-key signup button, the `Translate selected` and `Settings`
+  menu items, and the LLM provider list, which now translates the display name
+  (`Custom (compatible with OpenAI)`) while the value stored in gsettings stays
+  untranslated. The catalog now covers all 92 strings marked for translation.
+- The repository shipped only binary `.mo` catalogs, with no `.po` source, so
+  translations were not maintainable. Added `locale/*.po`, `locale/dynamic.pot`
+  for the runtime-translated provider names, and `locale/compile.sh` /
+  `locale/update.sh`. `build.sh` now runs `locale/compile.sh --check`, so a
+  release build fails when a `.mo` is stale or a Chinese translation is missing.
+  `locale/ja` and `locale/ko` remain the empty stubs imported from upstream and
+  fall back to English.
 - The global shortcuts stopped summoning the translation panel on GNOME Shell
   51. `St.BoxLayout` no longer has a `vertical` property in GNOME 51; it takes
   `orientation` instead. The five `new St.BoxLayout({ vertical: true })` calls in

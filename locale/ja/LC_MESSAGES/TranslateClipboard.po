@@ -1,0 +1,397 @@
+# ja translation for Translate Clipboard Plus.
+# Copyright (C) 2025 lsnow, 2025 atfa
+# This file is distributed under the same license as the Translate Clipboard Plus package.
+#
+# STUB: the catalog imported from upstream (commit f004bc0) contained no
+# translated strings, so this language currently falls back to the English
+# sources. Translate the entries below and run ./locale/compile.sh ja.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: translate-clipboard-plus@atfa.github.io\n"
+"Report-Msgid-Bugs-To: https://github.com/atfa/gnome-translate-clipboard-plus/"
+"issues\n"
+"POT-Creation-Date: 2026-11-05 22:54+0800\n"
+"PO-Revision-Date: 2026-11-05 23:10+0800\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: prefs.js:29
+msgid "General"
+msgstr ""
+
+#: prefs.js:38 TcIndicator.js:112
+msgid "Screenshot translation"
+msgstr ""
+
+#: prefs.js:39
+msgid ""
+"Recognize screenshot text with an OpenAI-compatible vision model, then "
+"translate it with the selected translation engine."
+msgstr ""
+
+#: prefs.js:44
+msgid "Enable or disable translation"
+msgstr ""
+
+#: prefs.js:45
+msgid "Whether to automatically translate selected text"
+msgstr ""
+
+#: prefs.js:48 TcIndicator.js:77
+msgid "Brief mode"
+msgstr ""
+
+#: prefs.js:52
+msgid "Auto hide"
+msgstr ""
+
+#: prefs.js:79
+msgid "Set Shortcut"
+msgstr ""
+
+#: prefs.js:87
+msgid "Cancel"
+msgstr ""
+
+#: prefs.js:91
+msgid "Apply"
+msgstr ""
+
+#: prefs.js:106
+msgid ""
+"Press the desired shortcut keys.\n"
+"Press Esc to cancel, Backspace to clear current input."
+msgstr ""
+
+#: prefs.js:116
+msgid "Press a key..."
+msgstr ""
+
+#: prefs.js:133 prefs.js:217 TcIndicator.js:116 TcIndicator.js:209
+#: TcIndicator.js:211
+msgid "Disabled"
+msgstr ""
+
+#: prefs.js:155
+msgid "Cleared (Press Apply)"
+msgstr ""
+
+#: prefs.js:195
+msgid "Translate the selected text"
+msgstr ""
+
+#: prefs.js:196
+msgid "Shortcut keys for translating selected text"
+msgstr ""
+
+#: prefs.js:208 TcIndicator.js:85
+msgid "Screenshot and translate"
+msgstr ""
+
+#: prefs.js:209
+msgid "Drag to select an area, recognize its text, and translate it."
+msgstr ""
+
+#: prefs.js:236
+msgid "Vision endpoint"
+msgstr ""
+
+#: prefs.js:240
+msgid "Vision model"
+msgstr ""
+
+#: prefs.js:244
+msgid "Vision API key"
+msgstr ""
+
+#: prefs.js:265
+msgid "TTS Voice"
+msgstr ""
+
+#: prefs.js:266
+msgid "Text-to-speech"
+msgstr ""
+
+#: prefs.js:296
+msgid "Auto hide mode"
+msgstr ""
+
+#: prefs.js:297
+msgid "How to auto hide the translation window"
+msgstr ""
+
+#: prefs.js:302
+msgid "Timeout"
+msgstr ""
+
+#: prefs.js:303
+msgid "Click outside"
+msgstr ""
+
+#: prefs.js:304
+msgid "Both"
+msgstr ""
+
+#: prefs.js:334
+msgid "Network proxy"
+msgstr ""
+
+#: prefs.js:343
+msgid "Engine"
+msgstr ""
+
+#: prefs.js:344
+msgid "Translation engine"
+msgstr ""
+
+#: prefs.js:372 TcIndicator.js:660 TcIndicator.js:723
+msgid "Auto"
+msgstr ""
+
+#: prefs.js:389 TcIndicator.js:65
+msgid "Source language"
+msgstr ""
+
+#: prefs.js:390
+msgid "Language code (e.g., en, zh, auto for auto-detect)"
+msgstr ""
+
+#: prefs.js:407 TcIndicator.js:66
+msgid "Primary target language"
+msgstr ""
+
+#: prefs.js:408
+msgid "Primary target language code (higher priority)"
+msgstr ""
+
+#: prefs.js:427 TcIndicator.js:672 TcIndicator.js:721
+msgid "None"
+msgstr ""
+
+#: prefs.js:437 TcIndicator.js:67
+msgid "Secondary target language"
+msgstr ""
+
+#: prefs.js:438
+msgid "Secondary target language code (lower priority, optional)"
+msgstr ""
+
+#: prefs.js:478
+msgid "LLM"
+msgstr ""
+
+#: prefs.js:495
+msgid "Provider"
+msgstr ""
+
+#: prefs.js:496
+msgid "LLM service provider"
+msgstr ""
+
+#: prefs.js:502
+msgid "Endpoint"
+msgstr ""
+
+#: prefs.js:503
+msgid "Endpoint for the LLM service"
+msgstr ""
+
+#: prefs.js:510
+msgid "Undo"
+msgstr ""
+
+#: prefs.js:518
+msgid "Model"
+msgstr ""
+
+#: prefs.js:519
+msgid "Model name/identifier for the LLM service"
+msgstr ""
+
+#: prefs.js:526
+msgid "Next model"
+msgstr ""
+
+#: prefs.js:532
+msgid "More models"
+msgstr ""
+
+#: prefs.js:541
+msgid "API Key"
+msgstr ""
+
+#: prefs.js:548
+msgid "New"
+msgstr ""
+
+#: prefs.js:549
+msgid "Signup"
+msgstr ""
+
+#: prefs.js:557
+msgid "Prompt template"
+msgstr ""
+
+#: prefs.js:577
+msgid "Reset All Settings"
+msgstr ""
+
+#: prefs.js:721
+msgid "About"
+msgstr ""
+
+#: prefs.js:728 TranslateWindow.js:206
+msgid "Translate Clipboard Plus"
+msgstr ""
+
+#: prefs.js:729
+msgid "Clipboard translation, screenshot OCR, and reverse checks."
+msgstr ""
+
+#: prefs.js:733
+msgid "Privacy Notice"
+msgstr ""
+
+#: prefs.js:733
+msgid ""
+"This extension needs clipboard access and may send clipboard contents to "
+"third-party translation, text-to-speech, or LLM services."
+msgstr ""
+
+#: prefs.js:734
+msgid "Credits"
+msgstr ""
+
+#: prefs.js:734
+msgid "Forked from Translate Clipboard by lsnow and extended by atfa."
+msgstr ""
+
+#: prefs.js:740
+msgid "Extension Page"
+msgstr ""
+
+#: prefs.js:741
+msgid "Source Code"
+msgstr ""
+
+#: prefs.js:742
+msgid "Report an Issue"
+msgstr ""
+
+#: prefs.js:743
+msgid "License"
+msgstr ""
+
+#: prefs.js:743
+msgid "GNU General Public License v3.0"
+msgstr ""
+
+#: prefs.js:761
+msgid "Open"
+msgstr ""
+
+#: TcIndicator.js:69
+msgid "Monitor the clipboard"
+msgstr ""
+
+#: TcIndicator.js:94
+msgid "Translate selected"
+msgstr ""
+
+#: TcIndicator.js:123
+msgid "Settings"
+msgstr ""
+
+#: TcIndicator.js:405
+msgid "No text was recognized in the screenshot."
+msgstr ""
+
+#: TcIndicator.js:415
+msgid "Screenshot recognition failed: "
+msgstr ""
+
+#: TcIndicator.js:548
+msgid "Invalid translation result format."
+msgstr ""
+
+#: TcIndicator.js:555
+msgid "No translation result."
+msgstr ""
+
+#: TranslateWindow.js:77
+msgid "Translating ..."
+msgstr ""
+
+#: TranslateWindow.js:81
+msgid "Recognizing screenshot text ..."
+msgstr ""
+
+#: TranslateWindow.js:126 TranslateWindow.js:136 TranslateWindow.js:148
+msgid "Check result"
+msgstr ""
+
+#: TranslateWindow.js:126
+msgid "Checking ..."
+msgstr ""
+
+#: TranslateWindow.js:148
+msgid "Check failed: "
+msgstr ""
+
+#: TranslateWindow.js:165 TranslateWindow.js:670
+msgid "Error"
+msgstr ""
+
+#: TranslateWindow.js:215
+msgid "Light mode"
+msgstr ""
+
+#: TranslateWindow.js:218
+msgid "Automatically check translation"
+msgstr ""
+
+#: TranslateWindow.js:221
+msgid "Pin panel"
+msgstr ""
+
+#: TranslateWindow.js:224
+msgid "Close"
+msgstr ""
+
+#: TranslateWindow.js:267
+msgid "Enter the text to query ..."
+msgstr ""
+
+#: TranslateWindow.js:307
+msgid "Text copied to clipboard."
+msgstr ""
+
+#: TranslateWindow.js:578
+msgid "Copy text"
+msgstr ""
+
+#: TranslateWindow.js:595
+msgid "Play audio"
+msgstr ""
+
+#: TranslateWindow.js:658
+msgid "Original"
+msgstr ""
+
+#: TranslateWindow.js:661
+msgid "Translation"
+msgstr ""
+
+#: TranslateWindow.js:668
+msgid "Translation result could not be displayed."
+msgstr ""
+
+#: llm.js:162
+msgid "Custom (compatible with OpenAI)"
+msgstr ""

@@ -1,0 +1,21 @@
+# Template for user-visible strings that xgettext cannot extract, because they
+# are translated at runtime from a variable (prefs.js does
+# `providerList.append(_(p.name))` with the names declared in llm.js).
+#
+# locale/update.sh appends this file to the generated template, so add a msgid
+# here whenever a new LLM provider display name is introduced.
+#
+# Brand names (OpenAI, OpenRouter, Google Gemini, DeepSeek, Ollama) are left
+# untranslated on purpose; only descriptive names get translated.
+msgid ""
+msgstr ""
+"Project-Id-Version: translate-clipboard-plus@atfa.github.io\n"
+"Report-Msgid-Bugs-To: https://github.com/atfa/gnome-translate-clipboard-plus/"
+"issues\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: llm.js:162
+msgid "Custom (compatible with OpenAI)"
+msgstr ""

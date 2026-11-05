@@ -146,11 +146,48 @@ Clipboard monitoring is disabled by default. When enabled, the extension reads p
 
 For a complete data-flow description, see [PRIVACY.md](PRIVACY.md).
 
+## Interface language
+
+The user interface is translated with gettext. The catalog domain is
+`TranslateClipboard` (the `gettext-domain` field of `metadata.json`), and GNOME
+Shell loads `locale/<language>/LC_MESSAGES/TranslateClipboard.mo` from the
+installed extension directory, so the interface follows the desktop language.
+
+| Language | Catalog | Coverage |
+| --- | --- | --- |
+| Chinese (China) | `locale/zh_CN/` | complete |
+| Japanese | `locale/ja/` | empty stub, falls back to English |
+| Korean | `locale/ko/` | empty stub, falls back to English |
+
+The `.po` files are the source of truth; the `.mo` files are generated and must
+not be edited by hand. GNOME Shell reads only the `.mo`, so a `.po` edit has no
+effect until it is compiled:
+
+```bash
+./locale/compile.sh            # regenerate every .mo from its .po
+./locale/compile.sh --check    # fail if a catalog is incomplete or stale
+./locale/update.sh             # pull new source strings into the .po files
+```
+
+`locale/compile.sh --check` is run by `build.sh`, so a release build fails if a
+`.mo` is out of date or a string marked for translation has no Chinese text.
+
+Strings that are only translated at runtime, such as the LLM provider display
+names in `llm.js`, are invisible to `xgettext`. They are listed in
+`locale/dynamic.pot`, which both scripts merge into the template.
+
+The `summary` and `description` in `schemas/*.gschema.xml` are translated by the
+system `gnome-shell-extensions` domain, not by this extension's catalog, so
+they are not covered by the files above.
+
 ## Build an extensions.gnome.org ZIP
 
 ```bash
 ./build.sh
 ```
+
+Requires the `gettext` tools (`xgettext`, `msgmerge`, `msgfmt`) in addition to
+`gnome-extensions` and `glib-compile-schemas`.
 
 The upload-ready archive is written to `dist/`. It contains readable source code and the source GSettings schema, but not the locally generated `gschemas.compiled` file.
 
