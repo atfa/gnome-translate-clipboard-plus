@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.0.2 - 2026-11-05
+
+### Fixed
+
+- Replaced every `vertical: true` on `St.BoxLayout` with
+  `orientation: Clutter.Orientation.VERTICAL`. GNOME Shell 51 removed the
+  `vertical` property from `St.BoxLayout`, and GJS throws
+  `No property vertical on StBoxLayout` for unknown constructor properties.
+  The panel is built lazily, so the extension enabled cleanly and the top-bar
+  icon appeared, but pressing the shortcut ran the handler and then threw before
+  any window was created: the shortcut looked dead. Shell 51's own UI code uses
+  `orientation: Clutter.Orientation.VERTICAL` (96 occurrences, zero `vertical: true`).
+- `deploy.sh` now restarts the extension after deploying, and warns that GNOME
+  Shell caches extension JavaScript, so `.js` changes need a shell restart
+  (log out and back in on Wayland).
+
 ## 1.0.1 - 2026-11-05
 
 ### Fixed

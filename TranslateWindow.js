@@ -157,7 +157,7 @@ export const TranslateWindow = GObject.registerClass(
                 return;
             this._clearResultContent();
             this._resultBox = new St.BoxLayout({
-                vertical: true,
+                orientation: Clutter.Orientation.VERTICAL,
                 style_class: 'tc-result-box'
             });
             this._contentBox.add_child(this._resultBox);
@@ -192,7 +192,7 @@ export const TranslateWindow = GObject.registerClass(
         _createWindow() {
             this._actor = new St.BoxLayout({
                 style_class: 'translate-window',
-                vertical: true,
+                orientation: Clutter.Orientation.VERTICAL,
                 reactive: true,
                 visible: false,
                 width: PANEL_WIDTH
@@ -257,7 +257,7 @@ export const TranslateWindow = GObject.registerClass(
 
             this._contentBox = new St.BoxLayout({
                 style_class: 'translate-box',
-                vertical: true,
+                orientation: Clutter.Orientation.VERTICAL,
                 x_expand: true
             });
             this._scroll.set_child(this._contentBox);
@@ -601,7 +601,7 @@ export const TranslateWindow = GObject.registerClass(
         _createResultSection(title, text, languageCode, useMarkup = false,
             showActions = true, extraClass = '', copyText = text) {
             let section = new St.BoxLayout({
-                vertical: true,
+                orientation: Clutter.Orientation.VERTICAL,
                 style_class: `tc-result-section ${extraClass}`.trim(),
                 x_expand: true
             });
@@ -633,7 +633,7 @@ export const TranslateWindow = GObject.registerClass(
 
         _parseResult(result, context) {
             this._resultBox = new St.BoxLayout({
-                vertical: true,
+                orientation: Clutter.Orientation.VERTICAL,
                 style_class: 'tc-result-box',
                 x_expand: true
             });
