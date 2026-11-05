@@ -3,6 +3,8 @@ import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import Soup from 'gi://Soup';
 
+import {gettext as _} from './utils.js';
+
 //import * as Params from 'resource:///org/gnome/shell/misc/params.js';
 
 const GOOGLE_TRANSLATION_URL = "https://translate.googleapis.com/translate_a/single";
@@ -41,7 +43,7 @@ export var GoogleTranslator = GObject.registerClass({
             if (proxyResolver)
                 this._session.set_proxy_resolver(proxyResolver);
             else
-                this.emit('error', 'Invalid proxy protocol');
+                this.emit('error', _('Invalid proxy protocol'));
         }
 
         let params = GenGoogleParams(from, to, text);
@@ -54,7 +56,7 @@ export var GoogleTranslator = GObject.registerClass({
             this._session.send_and_read_async(request, GLib.PRIORITY_DEFAULT, null,
                 (session, result, error) => {
                     if (error) {
-                        this.emit('error', 'Failed to connect: ' + error.message);
+                        this.emit('error', _('Failed to connect: ') + error.message);
                         return;
                     }
                     else {
@@ -64,7 +66,7 @@ export var GoogleTranslator = GObject.registerClass({
             );
         }
         catch (error) {
-            this.emit('error', 'Unable to send libsoup json message: ' + error);
+            this.emit('error', _('Unable to send libsoup json message: ') + error);
         }
     }
 
@@ -76,7 +78,7 @@ export var GoogleTranslator = GObject.registerClass({
                 message.response_body.data; // Soup 2
 
             if (status == 404)
-                this.emit('error', '404 (Page not found)');
+                this.emit('error', _('404 (Page not found)'));
             else
                 this.emit('completed', data);
         } catch (error) {

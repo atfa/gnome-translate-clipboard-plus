@@ -1,0 +1,473 @@
+# Chinese (China) translation for Translate Clipboard Plus.
+# Copyright (C) 2025 lsnow, 2025 atfa
+# This file is distributed under the same license as the Translate Clipboard Plus package.
+#
+# Maintainers: this file is the source of truth for the Chinese UI strings.
+# After editing it, regenerate the binary catalog that GNOME Shell loads:
+#
+#     ./locale/compile.sh zh_CN
+#
+# To pull in strings that were added to the JavaScript sources, run:
+#
+#     ./locale/update.sh
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: translate-clipboard-plus@atfa.github.io\n"
+"Report-Msgid-Bugs-To: https://github.com/atfa/gnome-translate-clipboard-plus/"
+"issues\n"
+"POT-Creation-Date: 2026-11-05 23:10+0800\n"
+"PO-Revision-Date: 2026-11-05 23:10+0800\n"
+"Last-Translator: atfa <atfa@github.io>\n"
+"Language-Team: atfa <atfa@github.io>\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: prefs.js:29
+msgid "General"
+msgstr "常规"
+
+#: prefs.js:38 TcIndicator.js:112
+msgid "Screenshot translation"
+msgstr "截图翻译"
+
+#: prefs.js:39
+msgid ""
+"Recognize screenshot text with an OpenAI-compatible vision model, then "
+"translate it with the selected translation engine."
+msgstr ""
+"使用兼容 OpenAI 的视觉模型识别截图中的文字，再使用所选翻译引擎进行翻译。"
+
+#: prefs.js:44
+msgid "Enable or disable translation"
+msgstr "启用或禁用翻译"
+
+#: prefs.js:45
+msgid "Whether to automatically translate selected text"
+msgstr "是否自动翻译选中的文本"
+
+#: prefs.js:48 TcIndicator.js:77
+msgid "Brief mode"
+msgstr "简洁模式"
+
+#: prefs.js:52
+msgid "Auto hide"
+msgstr "自动隐藏"
+
+#: prefs.js:79
+msgid "Set Shortcut"
+msgstr "设置快捷键"
+
+#: prefs.js:87
+msgid "Cancel"
+msgstr "取消"
+
+#: prefs.js:91
+msgid "Apply"
+msgstr "应用"
+
+#: prefs.js:106
+msgid ""
+"Press the desired shortcut keys.\n"
+"Press Esc to cancel, Backspace to clear current input."
+msgstr ""
+"请按下所需的快捷键。\n"
+"按 Esc 取消，按 Backspace 清除当前输入。"
+
+#: prefs.js:116
+msgid "Press a key..."
+msgstr "按下一个键…"
+
+#: prefs.js:133 prefs.js:217 TcIndicator.js:116 TcIndicator.js:209
+#: TcIndicator.js:211
+msgid "Disabled"
+msgstr "已禁用"
+
+#: prefs.js:155
+msgid "Cleared (Press Apply)"
+msgstr "已清除（请点击“应用”）"
+
+#: prefs.js:195
+msgid "Translate the selected text"
+msgstr "翻译选中的文本"
+
+#: prefs.js:196
+msgid "Shortcut keys for translating selected text"
+msgstr "翻译选中文本的快捷键"
+
+#: prefs.js:208 TcIndicator.js:85
+msgid "Screenshot and translate"
+msgstr "截图并翻译"
+
+#: prefs.js:209
+msgid "Drag to select an area, recognize its text, and translate it."
+msgstr "拖动以选择一个区域，识别其中的文字并翻译。"
+
+#: prefs.js:236
+msgid "Vision endpoint"
+msgstr "视觉模型接口地址"
+
+#: prefs.js:240
+msgid "Vision model"
+msgstr "视觉模型"
+
+#: prefs.js:244
+msgid "Vision API key"
+msgstr "视觉模型 API 密钥"
+
+#: prefs.js:265
+msgid "TTS Voice"
+msgstr "语音朗读"
+
+#: prefs.js:266
+msgid "Text-to-speech"
+msgstr "文本转语音"
+
+#: prefs.js:296
+msgid "Auto hide mode"
+msgstr "自动隐藏模式"
+
+#: prefs.js:297
+msgid "How to auto hide the translation window"
+msgstr "翻译窗口的自动隐藏方式"
+
+#: prefs.js:302
+msgid "Timeout"
+msgstr "超时后隐藏"
+
+#: prefs.js:303
+msgid "Click outside"
+msgstr "点击窗口外部"
+
+#: prefs.js:304
+msgid "Both"
+msgstr "两者"
+
+#: prefs.js:334
+msgid "Network proxy"
+msgstr "网络代理"
+
+#: prefs.js:343
+msgid "Engine"
+msgstr "引擎"
+
+#: prefs.js:344
+msgid "Translation engine"
+msgstr "翻译引擎"
+
+#: prefs.js:372 TcIndicator.js:660 TcIndicator.js:723
+msgid "Auto"
+msgstr "自动"
+
+#: prefs.js:389 TcIndicator.js:65
+msgid "Source language"
+msgstr "源语言"
+
+#: prefs.js:390
+msgid "Language code (e.g., en, zh, auto for auto-detect)"
+msgstr "语言代码（如 en、zh，auto 表示自动检测）"
+
+#: prefs.js:407 TcIndicator.js:66
+msgid "Primary target language"
+msgstr "主要目标语言"
+
+#: prefs.js:408
+msgid "Primary target language code (higher priority)"
+msgstr "主要目标语言代码（优先级更高）"
+
+#: prefs.js:427 TcIndicator.js:672 TcIndicator.js:721
+msgid "None"
+msgstr "无"
+
+#: prefs.js:437 TcIndicator.js:67
+msgid "Secondary target language"
+msgstr "次要目标语言"
+
+#: prefs.js:438
+msgid "Secondary target language code (lower priority, optional)"
+msgstr "次要目标语言代码（优先级较低，可选）"
+
+#: prefs.js:478
+msgid "LLM"
+msgstr "大语言模型"
+
+#: prefs.js:495
+msgid "Provider"
+msgstr "服务提供商"
+
+#: prefs.js:496
+msgid "LLM service provider"
+msgstr "大语言模型服务提供商"
+
+#: prefs.js:502
+msgid "Endpoint"
+msgstr "接口地址"
+
+#: prefs.js:503
+msgid "Endpoint for the LLM service"
+msgstr "大语言模型服务的接口地址"
+
+#: prefs.js:510
+msgid "Undo"
+msgstr "撤销"
+
+#: prefs.js:518
+msgid "Model"
+msgstr "模型"
+
+#: prefs.js:519
+msgid "Model name/identifier for the LLM service"
+msgstr "大语言模型服务的模型名称或标识符"
+
+#: prefs.js:526
+msgid "Next model"
+msgstr "下一个模型"
+
+#: prefs.js:532
+msgid "More models"
+msgstr "更多模型"
+
+#: prefs.js:541
+msgid "API Key"
+msgstr "API 密钥"
+
+#: prefs.js:548
+msgid "New"
+msgstr "注册新账号"
+
+#: prefs.js:549
+msgid "Signup"
+msgstr "注册"
+
+#: prefs.js:557
+msgid "Prompt template"
+msgstr "提示词模板"
+
+#: prefs.js:577
+msgid "Reset All Settings"
+msgstr "重置所有设置"
+
+#: prefs.js:721
+msgid "About"
+msgstr "关于"
+
+#: prefs.js:728 TranslateWindow.js:206
+msgid "Translate Clipboard Plus"
+msgstr "Translate Clipboard Plus"
+
+#: prefs.js:729
+msgid "Clipboard translation, screenshot OCR, and reverse checks."
+msgstr "剪贴板翻译、截图文字识别（OCR）与反向翻译检查。"
+
+#: prefs.js:733
+msgid "Privacy Notice"
+msgstr "隐私说明"
+
+#: prefs.js:733
+msgid ""
+"This extension needs clipboard access and may send clipboard contents to "
+"third-party translation, text-to-speech, or LLM services."
+msgstr ""
+"本扩展需要访问剪贴板，并可能将剪贴板内容发送到第三方翻译、文本转语音或大语言"
+"模型服务。"
+
+#: prefs.js:734
+msgid "Credits"
+msgstr "致谢"
+
+#: prefs.js:734
+msgid "Forked from Translate Clipboard by lsnow and extended by atfa."
+msgstr "本项目派生自 lsnow 的 Translate Clipboard，并由 atfa 扩展功能。"
+
+#: prefs.js:740
+msgid "Extension Page"
+msgstr "扩展页面"
+
+#: prefs.js:741
+msgid "Source Code"
+msgstr "源代码"
+
+#: prefs.js:742
+msgid "Report an Issue"
+msgstr "报告问题"
+
+#: prefs.js:743
+msgid "License"
+msgstr "许可证"
+
+#: prefs.js:743
+msgid "GNU General Public License v3.0"
+msgstr "GNU 通用公共许可证 v3.0"
+
+#: prefs.js:761
+msgid "Open"
+msgstr "打开"
+
+#: TcIndicator.js:69
+msgid "Monitor the clipboard"
+msgstr "监视剪贴板"
+
+#: TcIndicator.js:94
+msgid "Translate selected"
+msgstr "翻译选中文本"
+
+#: TcIndicator.js:123
+msgid "Settings"
+msgstr "设置"
+
+#: TcIndicator.js:405 vision.js:81
+msgid "No text was recognized in the screenshot."
+msgstr "没有在截图中识别到文字。"
+
+#: TcIndicator.js:415
+msgid "Screenshot recognition failed: "
+msgstr "截图识别失败："
+
+#: TcIndicator.js:548
+msgid "Invalid translation result format."
+msgstr "翻译结果格式无效。"
+
+#: TcIndicator.js:555
+msgid "No translation result."
+msgstr "未获得翻译结果。"
+
+#: TranslateWindow.js:77
+msgid "Translating ..."
+msgstr "正在翻译…"
+
+#: TranslateWindow.js:81
+msgid "Recognizing screenshot text ..."
+msgstr "正在识别截图文字…"
+
+#: TranslateWindow.js:126 TranslateWindow.js:136 TranslateWindow.js:148
+msgid "Check result"
+msgstr "检查结果"
+
+#: TranslateWindow.js:126
+msgid "Checking ..."
+msgstr "正在检查…"
+
+#: TranslateWindow.js:148
+msgid "Check failed: "
+msgstr "检查失败："
+
+#: TranslateWindow.js:165 TranslateWindow.js:670
+msgid "Error"
+msgstr "错误"
+
+#: TranslateWindow.js:215
+msgid "Light mode"
+msgstr "浅色模式"
+
+#: TranslateWindow.js:218
+msgid "Automatically check translation"
+msgstr "自动检查翻译"
+
+#: TranslateWindow.js:221
+msgid "Pin panel"
+msgstr "固定面板"
+
+#: TranslateWindow.js:224
+msgid "Close"
+msgstr "关闭"
+
+#: TranslateWindow.js:267
+msgid "Enter the text to query ..."
+msgstr "请输入要翻译的文本…"
+
+#: TranslateWindow.js:307
+msgid "Text copied to clipboard."
+msgstr "文本已复制到剪贴板。"
+
+#: TranslateWindow.js:578
+msgid "Copy text"
+msgstr "复制文本"
+
+#: TranslateWindow.js:595
+msgid "Play audio"
+msgstr "播放语音"
+
+#: TranslateWindow.js:658
+msgid "Original"
+msgstr "原文"
+
+#: TranslateWindow.js:661
+msgid "Translation"
+msgstr "译文"
+
+#: TranslateWindow.js:668
+msgid "Translation result could not be displayed."
+msgstr "无法显示翻译结果。"
+
+#: google.js:46 llm.js:278
+msgid "Invalid proxy protocol"
+msgstr "代理协议无效"
+
+#: google.js:59 llm.js:298
+msgid "Failed to connect: "
+msgstr "连接失败："
+
+#: google.js:69 llm.js:306
+msgid "Unable to send libsoup json message: "
+msgstr "无法发送 JSON 请求："
+
+#: google.js:81
+msgid "404 (Page not found)"
+msgstr "404（页面未找到）"
+
+#: llm.js:43
+msgid "OpenRouter"
+msgstr "OpenRouter"
+
+#: llm.js:83
+msgid "Google Gemini"
+msgstr "Google Gemini"
+
+#: llm.js:107
+msgid "OpenAI"
+msgstr "OpenAI"
+
+#: llm.js:126
+msgid "DeepSeek"
+msgstr "DeepSeek"
+
+#: llm.js:146
+msgid "Ollama"
+msgstr "Ollama"
+
+#: llm.js:175
+msgid "Custom (compatible with OpenAI)"
+msgstr "自定义（兼容 OpenAI）"
+
+#: llm.js:287
+msgid "Unable to create request for: "
+msgstr "无法创建请求："
+
+#: vision.js:32
+msgid "Vision endpoint and model are required."
+msgstr "需要填写视觉模型接口地址和视觉模型。"
+
+#: vision.js:59
+msgid "Unable to create vision request for: "
+msgstr "无法创建视觉模型请求："
+
+#~ msgid "Failed to extract translation. Please check your language settings."
+#~ msgstr "无法提取翻译结果，请检查语言设置。"
+
+#~ msgid ""
+#~ "Invalid translation result format. Please check your language settings."
+#~ msgstr "翻译结果格式无效，请检查语言设置。"
+
+#~ msgid "No translation result. Please check your language settings."
+#~ msgstr "未获得翻译结果，请检查语言设置。"
+
+#~ msgid ""
+#~ "Translation failed. Please check your language settings and switch to "
+#~ "another language."
+#~ msgstr "翻译失败，请检查语言设置并切换到其他语言。"
+
+#~ msgid "language settings"
+#~ msgstr "语言设置"

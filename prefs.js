@@ -76,7 +76,7 @@ class GeneralPage extends Adw.PreferencesPage {
 
     _editShortcut(key, row, shortcutLabel) {
         const dialog = new Adw.Dialog({
-            title: 'Set Shortcut',
+            title: _('Set Shortcut'),
         });
 
         const toolbarView = new Adw.ToolbarView();
@@ -192,7 +192,7 @@ class GeneralPage extends Adw.PreferencesPage {
         });
 
         let row = new Adw.ActionRow({
-            title: 'Translate the selected text',
+            title: _('Translate the selected text'),
             subtitle: _('Shortcut keys for translating selected text')
         });
 
@@ -487,7 +487,9 @@ class AiPage extends Adw.PreferencesPage {
         // Provider
         const providerList = new Gtk.StringList();
         Object.values(Providers).forEach(p => {
-            providerList.append(p.name);
+            // Display only: the value stored in gsettings and compared in
+            // _onProviderChanged() stays the untranslated `p.name`.
+            providerList.append(_(p.name));
         });
         const providerRow = new Adw.ComboRow({
             title: _('Provider'),
@@ -543,7 +545,7 @@ class AiPage extends Adw.PreferencesPage {
             css_classes: ['flat'],
             valign: Gtk.Align.CENTER,
             uri: '',
-            label: 'New',
+            label: _('New'),
             tooltip_text: _('Signup'),
         });
         apiKeyRow.add_suffix(this._signupButton);

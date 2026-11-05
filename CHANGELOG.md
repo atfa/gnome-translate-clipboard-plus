@@ -4,6 +4,30 @@
 
 ### Fixed
 
+- The Chinese interface was only partly translated, and part of it could not be
+  translated at all. Three separate causes: the shipped `locale/zh_CN` catalog was
+  the one imported with upstream v37 (`f004bc0`) and had never been refreshed, so
+  39 of the strings the Plus edition added (screenshot OCR, the About page, the
+  panel toolbar, the reverse-check section) had no entry and rendered in English;
+  eleven strings were never wrapped in `gettext()`, so no catalog could ever cover
+  them — the `Set Shortcut` dialog title, the `Translate the selected text` row,
+  the API-key signup button, the `Translate selected` and `Settings` menu items,
+  and the failure messages that `google.js`, `llm.js` and `vision.js` emit and the
+  panel shows verbatim (`Failed to connect: `, `Invalid proxy protocol`, `404 (Page
+  not found)`, `Vision endpoint and model are required.`, and six more); and the
+  LLM provider list passed a variable to `gettext()`, which no extractor can see,
+  so `Custom (compatible with OpenAI)` was dead code. The provider names are now
+  marked with `N_()` so they reach the catalog, and it covers all 104 strings
+  marked for translation.
+- The repository shipped only binary `.mo` catalogs, with no `.po` source, so
+  translations were not maintainable. Added `locale/*.po`, `locale/compile.sh`
+  and `locale/update.sh`. `google.js`, `llm.js` and `vision.js` are loaded by both
+  the shell and the preferences process, so they translate through
+  `utils.gettext()`, a `GLib.dgettext()` wrapper over the domain in
+  `config/constants.js`. `build.sh` now runs `locale/compile.sh --check`, so a
+  release build fails when a `.mo` is stale or a Chinese translation is missing.
+  `locale/ja` and `locale/ko` remain the empty stubs imported from upstream and
+  fall back to English.
 - The global shortcuts stopped summoning the translation panel on GNOME Shell
   51. `St.BoxLayout` no longer has a `vertical` property in GNOME 51; it takes
   `orientation` instead. The five `new St.BoxLayout({ vertical: true })` calls in

@@ -5,6 +5,19 @@ import Soup from 'gi://Soup';
 
 import * as Languages from './languages.js';
 import * as Utils from './utils.js';
+import {gettext as _} from './utils.js';
+
+/**
+ * Mark a string for extraction by xgettext without translating it.
+ *
+ * The provider `name` values are shown in the preferences provider dropdown,
+ * which translates them at display time (prefs.js). A plain `_(name)` call
+ * cannot be used there: xgettext only extracts string literals, so a variable
+ * msgid would never reach the .po files and gettext would silently return the
+ * source text. N_() makes the literal visible to the extractor while staying a
+ * no-op at runtime.
+ */
+const N_ = s => s;
 
 export const providers = {
     /*
@@ -27,7 +40,7 @@ export const providers = {
     },
     */
     "openrouter": {
-        name: "OpenRouter",
+        name: N_("OpenRouter"),
         models: [
             "google/gemini-3.1-flash-lite",
             "google/gemini-3.5-flash",
@@ -67,7 +80,7 @@ export const providers = {
         }
     },
     "gemini": {
-        name: "Google Gemini",
+        name: N_("Google Gemini"),
         models: [
             "gemini-3.1-pro-preview",
             "gemini-3.5-flash",
@@ -91,7 +104,7 @@ export const providers = {
         }
     },
     "openai": {
-        name: "OpenAI",
+        name: N_("OpenAI"),
         models: [
             "o1-mini",
             "o1-preview",
@@ -110,7 +123,7 @@ export const providers = {
         }
     },
     "deepseek": {
-        name: "DeepSeek",
+        name: N_("DeepSeek"),
         models: ['deepseek-v4-flash', 'deepseek-v4-pro'],
         endpoint: "https://api.deepseek.com/chat/completions",
         signup: "https://platform.deepseek.com/api_keys",
@@ -130,7 +143,7 @@ export const providers = {
     },
     */
     "ollama": {
-        name: "Ollama",
+        name: N_("Ollama"),
         models: [
             "7shi/llama-translate:8b-q4_K_M",
             "icky/translate:latest",
@@ -159,7 +172,7 @@ export const providers = {
         }
     },
     "custom": {
-        name: "Custom (compatible with OpenAI)",
+        name: N_("Custom (compatible with OpenAI)"),
         models: [],
         endpoint: "http://127.0.0.1:4000/v1/chat/completions",
         signup: "",
@@ -262,7 +275,7 @@ export var AiTranslator = GObject.registerClass({
             if (proxyResolver)
                 this._session.set_proxy_resolver(proxyResolver);
             else
-                this.emit('error', 'Invalid proxy protocol');
+                this.emit('error', _('Invalid proxy protocol'));
         }
 
         Utils.getApiKey(this._schema, this._providerName,
@@ -271,7 +284,7 @@ export var AiTranslator = GObject.registerClass({
                 let url = this._provider.getUrl ? this._provider.getUrl(this._provider.endpoint, this._model) : this._provider.endpoint;
                 let request = Soup.Message.new('POST', url);
                 if (!request) {
-                    this.emit('error', 'Unable to create request for: ' + url);
+                    this.emit('error', _('Unable to create request for: ') + url);
                 }
                 request.request_headers.append('Authorization', `Bearer ${_apiKey}`);
                 request.request_headers.append('Content-type', 'application/json');
@@ -282,7 +295,7 @@ export var AiTranslator = GObject.registerClass({
                     this._session.send_and_read_async(request, GLib.PRIORITY_DEFAULT, null,
                         (session, result, error) => {
                             if (error) {
-                                this.emit('error', 'Failed to connect: ' + error.message);
+                                this.emit('error', _('Failed to connect: ') + error.message);
                             }
                             else {
                                 this._processMessage(session, result, request.status_code);
@@ -290,7 +303,7 @@ export var AiTranslator = GObject.registerClass({
                         }
                     );
                 } catch (error) {
-                    this.emit('error', 'Unable to send libsoup json message: ' + error.message);
+                    this.emit('error', _('Unable to send libsoup json message: ') + error.message);
                 }
             },
             (error) => {

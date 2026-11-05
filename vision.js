@@ -3,6 +3,8 @@ import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 import Soup from 'gi://Soup';
 
+import {gettext as _} from './utils.js';
+
 const OCR_PROMPT = `Read all visible text in this screenshot exactly as written.
 Preserve the natural reading order and line breaks.
 Return only the recognized text, without Markdown fences, commentary, translation, or labels.`;
@@ -27,7 +29,7 @@ export const VisionRecognizer = GObject.registerClass({
         const model = this._settings.get_string('vision-model').trim();
         const apiKey = this._settings.get_string('vision-api-key');
         if (!endpoint || !model) {
-            this.emit('error', 'Vision endpoint and model are required.');
+            this.emit('error', _('Vision endpoint and model are required.'));
             return;
         }
 
@@ -54,7 +56,7 @@ export const VisionRecognizer = GObject.registerClass({
 
         const request = Soup.Message.new('POST', url);
         if (!request) {
-            this.emit('error', `Unable to create vision request for: ${url}`);
+            this.emit('error', _('Unable to create vision request for: ') + url);
             return;
         }
         request.request_headers.append('Authorization', `Bearer ${apiKey}`);
@@ -76,7 +78,7 @@ export const VisionRecognizer = GObject.registerClass({
                     }
                     const text = response?.choices?.[0]?.message?.content?.trim();
                     if (!text)
-                        this.emit('error', 'No text was recognized in the screenshot.');
+                        this.emit('error', _('No text was recognized in the screenshot.'));
                     else
                         this.emit('completed', text);
                 } catch (error) {
