@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.0.1 - Unreleased
+
+### Fixed
+
+- Added GNOME Shell 51 to `shell-version`. On GNOME Shell 51 the extension was
+  reported as `OUT OF DATE` and was never loaded, because GNOME Shell refuses to
+  load an extension whose `metadata.json` does not list the running shell's
+  major version. No JavaScript API changes were required: every Shell, St, Meta,
+  Clutter, PopupMenu and Soup API used by the extension is unchanged in 51.
+- After a GNOME major upgrade, `metadata.json` is only re-read when GNOME Shell
+  restarts, so a shell restart (log out and back in on Wayland) is required for
+  the new `shell-version` to take effect.
+
 ## 1.0.0 - 2026-08-27
 
 First public release of Translate Clipboard Plus, based on Translate Clipboard version 37.

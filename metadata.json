@@ -5,7 +5,8 @@
   "settings-schema": "org.gnome.shell.extensions.translate-clipboard-plus",
   "shell-version": [
     "49",
-    "50"
+    "50",
+    "51"
   ],
   "url": "https://github.com/atfa/gnome-translate-clipboard-plus",
   "uuid": "translate-clipboard-plus@atfa.github.io"

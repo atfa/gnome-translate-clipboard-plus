@@ -35,8 +35,12 @@ See [CHANGELOG.md](CHANGELOG.md) for the release summary.
 
 ## Compatibility
 
-- GNOME Shell 49 and 50
+- GNOME Shell 49, 50 and 51
 - Wayland is supported.
+- GNOME Shell only loads an extension whose `metadata.json` lists the running
+  shell's major version. After a GNOME major upgrade, add the new major version
+  to `shell-version` and restart GNOME Shell, otherwise the extension is
+  reported as `OUT OF DATE` and is not loaded.
 - The extension uses GNOME Shell's built-in screenshot API; no `gnome-screenshot`, `grim`, or `slurp` package is required.
 
 ## Installation
