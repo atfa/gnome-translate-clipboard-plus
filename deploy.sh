@@ -73,7 +73,7 @@ trap cleanup EXIT
 # Assemble only runtime content. Development metadata and this script stay in
 # the working tree and are not installed into GNOME Shell's extension folder.
 rsync -a \
-    --exclude='.git/' \
+    --exclude='.git' \
     --exclude='.gitignore' \
     --exclude='deploy.sh' \
     --exclude='build.sh' \

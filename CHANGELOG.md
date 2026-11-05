@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.0.1 - 2026-11-05
+
+### Fixed
+
+- Added GNOME Shell 51 to `shell-version`. GNOME Shell 51 rejected the extension
+  with an `OUT OF DATE` state, so it was enabled in gsettings but never loaded:
+  no top-bar icon, no shortcut, and no JavaScript error in the journal. The
+  compatibility check is `shell-version.some(v => v.startsWith(major))`, so the
+  major version has to be listed explicitly.
+
 ## 1.0.0 - 2026-08-27
 
 First public release of Translate Clipboard Plus, based on Translate Clipboard version 37.

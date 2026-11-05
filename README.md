@@ -35,8 +35,36 @@ See [CHANGELOG.md](CHANGELOG.md) for the release summary.
 
 ## Compatibility
 
-- GNOME Shell 49 and 50
+- GNOME Shell 49, 50 and 51
 - Wayland is supported.
+
+### How the version gate works
+
+GNOME Shell 51 decides compatibility with:
+
+```js
+const [major] = Config.PACKAGE_VERSION.split('.');
+return !extension.metadata['shell-version'].some(v => v.startsWith(major));
+```
+
+So every supported major version must be listed explicitly in `metadata.json`.
+Wildcards are **not** honoured: `"*"` and `"5*"` both fail the `startsWith(major)`
+check and leave the extension `OUT OF DATE`. When GNOME Shell 52 is released,
+add `"52"` to `shell-version`, verify the extension loads, then release.
+
+If the extension shows as `OUT OF DATE`, it is never loaded at all — there is no
+JavaScript error in the journal. Confirm with:
+
+```bash
+gnome-extensions info translate-clipboard-plus@atfa.github.io
+```
+
+For a one-off test without editing `metadata.json`, you can disable the gate
+(this is what "unsafe mode" does):
+
+```bash
+gsettings set org.gnome.shell disable-extension-version-validation true
+```
 - The extension uses GNOME Shell's built-in screenshot API; no `gnome-screenshot`, `grim`, or `slurp` package is required.
 
 ## Installation
