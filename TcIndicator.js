@@ -50,7 +50,7 @@ export const TcIndicator = GObject.registerClass(
             this._activeRequest = null;
             this._primaryContext = null;
             this._visionRequestActive = false;
-            this._keybindingsRegistered = false;
+            this._keybindingsRegistered = new Set();
 
             this._locale = this._getLocale();
 
@@ -316,27 +316,46 @@ export const TcIndicator = GObject.registerClass(
         }
 
         _removeKeybindings() {
-            if (!this._keybindingsRegistered)
-                return;
-            Main.wm.removeKeybinding('translate-selected-text');
-            Main.wm.removeKeybinding('translate-screenshot');
-            this._keybindingsRegistered = false;
+            for (const name of [...this._keybindingsRegistered]) {
+                Main.wm.removeKeybinding(name);
+                this._keybindingsRegistered.delete(name);
+            }
         }
 
         _setupKeybindings() {
-            Main.wm.addKeybinding('translate-selected-text',
-                this._settings,
-                Meta.KeyBindingFlags.IGNORE_AUTOREPEAT,
-                Shell.ActionMode.NORMAL |
-                Shell.ActionMode.POPUP,
-                this._translateSelected.bind(this));
-            Main.wm.addKeybinding('translate-screenshot',
-                this._settings,
-                Meta.KeyBindingFlags.IGNORE_AUTOREPEAT,
-                Shell.ActionMode.NORMAL |
-                Shell.ActionMode.POPUP,
-                this._translateScreenshot.bind(this));
-            this._keybindingsRegistered = true;
+            // Clear first, including a registration left behind by a previous
+            // instance of the extension: mutter keys its keybinding table by
+            // name and that table is global, so a stale entry makes
+            // add_keybinding() fail, and Main.wm.addKeybinding() then skips
+            // allowKeybinding(), leaving the shortcut inert in every action mode
+            // until the shell restarts. A per-instance flag cannot be trusted
+            // for this, so remove unconditionally and accept the harmless
+            // "non-existent" warnings mutter logs on a clean start.
+            for (const name of [Fields.TRANS_SELECTED, Fields.TRANS_SCREENSHOT]) {
+                Main.wm.removeKeybinding(name);
+                this._keybindingsRegistered.delete(name);
+            }
+
+            const bindings = [
+                [Fields.TRANS_SELECTED, this._translateSelected.bind(this)],
+                [Fields.TRANS_SCREENSHOT, this._translateScreenshot.bind(this)],
+            ];
+            for (const [name, handler] of bindings) {
+                const action = Main.wm.addKeybinding(
+                    name,
+                    this._settings,
+                    Meta.KeyBindingFlags.IGNORE_AUTOREPEAT,
+                    Shell.ActionMode.NORMAL |
+                    Shell.ActionMode.POPUP,
+                    handler);
+                if (action === Meta.KeyBindingAction.NONE) {
+                    this._keybindingsRegistered.delete(name);
+                    log(`${IndicatorName}: keybinding ${name} is not active,`
+                        + ' it is probably taken by another extension');
+                } else {
+                    this._keybindingsRegistered.add(name);
+                }
+            }
         }
 
         async _translateScreenshot() {

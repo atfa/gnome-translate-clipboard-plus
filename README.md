@@ -37,6 +37,29 @@ See [CHANGELOG.md](CHANGELOG.md) for the release summary.
 
 - GNOME Shell 49, 50 and 51
 - Wayland is supported.
+- GNOME Shell only loads an extension whose `metadata.json` lists the running
+  shell's major version. The check is
+  `shell-version.some(v => v.startsWith(major))`, so wildcards such as `"*"` and
+  `"5*"` do not work: every supported major version must be listed explicitly.
+  After a GNOME major upgrade, add the new major version to `shell-version`,
+  otherwise the extension is reported as `OUT OF DATE` and is never loaded.
+- Applying a new `shell-version` usually does not need a logout. `gnome-extensions
+  enable`/`disable` reuses the cached metadata and is not enough, and the
+  `ReloadExtension` D-Bus method is a no-op in 49+, but toggling
+  `org.gnome.shell disable-extension-version-validation` makes the shell call
+  `reloadExtension()`, which re-reads `metadata.json` from disk. `./deploy.sh
+  --force-reload` does this for you and restores the key to `false`. Logging out
+  and back in is a fallback that always works.
+- A logout *is* required when the `version` field of `metadata.json` changes:
+  `unloadExtension()` records the old value and `_canLoad()` then refuses the new
+  one, logging "A different version was loaded previously. You need to log out
+  for changes to take effect." This project's `metadata.json` has no `version`
+  field, so `shell-version` changes reload cleanly.
+- Toggling `disable-extension-version-validation` reloads every extension and
+  permanently drops any extension that is out of date from `enabled-extensions`.
+  Do not leave the key set to `true` as a permanent workaround.
+- Changes to the extension's own JavaScript **do** need a logout on Wayland:
+  GNOME Shell caches extension modules, so `deploy.sh` prints a reminder.
 
 ### How the version gate works
 
@@ -46,11 +69,6 @@ GNOME Shell 51 decides compatibility with:
 const [major] = Config.PACKAGE_VERSION.split('.');
 return !extension.metadata['shell-version'].some(v => v.startsWith(major));
 ```
-
-So every supported major version must be listed explicitly in `metadata.json`.
-Wildcards are **not** honoured: `"*"` and `"5*"` both fail the `startsWith(major)`
-check and leave the extension `OUT OF DATE`. When GNOME Shell 52 is released,
-add `"52"` to `shell-version`, verify the extension loads, then release.
 
 If the extension shows as `OUT OF DATE`, it is never loaded at all — there is no
 JavaScript error in the journal. Confirm with:
@@ -65,29 +83,6 @@ For a one-off test without editing `metadata.json`, you can disable the gate
 ```bash
 gsettings set org.gnome.shell disable-extension-version-validation true
 ```
-
-Beware that toggling that key makes GNOME Shell drop every `OUT OF DATE`
-extension from `org.gnome.shell enabled-extensions`, permanently, so it is not
-a good long-term workaround.
-
-### Applying a metadata change without logging out
-
-GNOME Shell parses `metadata.json` in `createExtensionObject()`, which is only
-reached from `reloadExtension()`. `gnome-extensions disable/enable` goes through
-`_onEnabledExtensionsChanged`, which reuses the cached metadata object, and the
-`ReloadExtension` D-Bus method is a deprecated no-op in GNOME 51. So a plain
-disable/enable will not apply a `shell-version` change.
-
-`./deploy.sh --force-reload` forces the reload by toggling
-`disable-extension-version-validation`, which makes
-`_onVersionValidationChanged()` call `reloadExtension()` for every extension.
-
-One boundary matters: `unloadExtension()` records `extension.metadata.version`,
-and `_canLoad()` then refuses to reload when that value changes, logging
-"A different version was loaded previously. You need to log out for changes to
-take effect." This extension has no `version` field, so the comparison is
-`undefined === undefined` and the reload succeeds. In other words: changing
-`shell-version` needs no logout, but adding and bumping a `version` field does.
 - The extension uses GNOME Shell's built-in screenshot API; no `gnome-screenshot`, `grim`, or `slurp` package is required.
 
 ## Installation

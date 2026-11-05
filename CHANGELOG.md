@@ -4,17 +4,27 @@
 
 ### Fixed
 
-- Replaced every `vertical: true` on `St.BoxLayout` with
-  `orientation: Clutter.Orientation.VERTICAL`. GNOME Shell 51 removed the
-  `vertical` property from `St.BoxLayout`, and GJS throws
-  `No property vertical on StBoxLayout` for unknown constructor properties.
-  The panel is built lazily, so the extension enabled cleanly and the top-bar
-  icon appeared, but pressing the shortcut ran the handler and then threw before
-  any window was created: the shortcut looked dead. Shell 51's own UI code uses
-  `orientation: Clutter.Orientation.VERTICAL` (96 occurrences, zero `vertical: true`).
-- `deploy.sh` now restarts the extension after deploying, and warns that GNOME
-  Shell caches extension JavaScript, so `.js` changes need a shell restart
-  (log out and back in on Wayland).
+- The global shortcuts stopped summoning the translation panel on GNOME Shell
+  51. `St.BoxLayout` no longer has a `vertical` property in GNOME 51; it takes
+  `orientation` instead. The five `new St.BoxLayout({ vertical: true })` calls in
+  `TranslateWindow.js` threw `No property vertical on StBoxLayout` from
+  `_createWindow()`, so pressing the shortcut ran the handler but the panel was
+  never created and nothing appeared. They now pass
+  `orientation: Clutter.Orientation.VERTICAL`, which is what GNOME Shell's own
+  interface uses (96 occurrences in Shell 51's UI code, zero `vertical: true`).
+  Because the panel is built lazily, the extension enabled cleanly and the
+  top-bar icon appeared, so the extension looked healthy while every invocation
+  died before creating a window.
+- Global shortcuts stopped working after an extension reload. Mutter keys its
+  keybinding table by name and that table is global, so an entry can outlive the
+  indicator that registered it. `_removeKeybindings()` was guarded by a
+  per-instance `_keybindingsRegistered` flag, so a new instance skipped the
+  removal, `add_keybinding()` then failed with "Trying to re-add keybinding",
+  and `Main.wm.addKeybinding()` skips `allowKeybinding()` when the add fails.
+  The keybinding stayed registered but allowed in no action mode, so the shortcut
+  was inert until the shell restarted. `_setupKeybindings()` now removes the
+  names unconditionally before adding, tracks registration per name, and checks
+  the return value of `addKeybinding()` and logs when a shortcut is not active.
 
 ## 1.0.1 - 2026-11-05
 
@@ -24,7 +34,25 @@
   with an `OUT OF DATE` state, so it was enabled in gsettings but never loaded:
   no top-bar icon, no shortcut, and no JavaScript error in the journal. The
   compatibility check is `shell-version.some(v => v.startsWith(major))`, so the
-  major version has to be listed explicitly.
+  major version has to be listed explicitly; wildcards such as `*` and `5*` are
+  not honoured. No JavaScript API changes were required for the version gate:
+  every Shell, St, Meta, Clutter, PopupMenu and Soup API used by the extension
+  is present in 51.
+- Applying a new `shell-version` does not require a logout. `metadata.json` is
+  cached at shell startup, so `gnome-extensions enable`/`disable` is not enough
+  and the `ReloadExtension` D-Bus method is a no-op in 49+, but toggling
+  `org.gnome.shell disable-extension-version-validation` makes the shell call
+  `reloadExtension()`, which re-reads `metadata.json` from disk. `./deploy.sh
+  --force-reload` does that and restores the key to `false`. A logout stays as a
+  fallback. A logout is required only when the `version` field of
+  `metadata.json` changes, because `_canLoad()` rejects a changed version; this
+  project has no `version` field, so `shell-version` changes reload cleanly.
+- `deploy.sh` excluded `.git/`, which does not match the `.git` *file* used by a
+  git worktree, so the worktree pointer file was installed into the extension
+  directory. It now excludes `.git` by name.
+- `deploy.sh` used `rsync -ain` for the real deployment. `-n` is rsync's
+  `--dry-run`, so files were reported as transferred without being written. The
+  real deploy now uses `rsync -ai --delete`.
 
 ## 1.0.0 - 2026-08-27
 
