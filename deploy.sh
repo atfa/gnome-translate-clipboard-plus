@@ -12,16 +12,20 @@ reload_extension=true
 
 usage() {
     cat <<'EOF'
-Usage: ./deploy.sh [--dry-run] [--no-reload]
+Usage: ./deploy.sh [--dry-run] [--no-reload] [--force-reload]
 
 Deploy this working tree to the per-user GNOME Shell extension directory.
 
 Options:
-  --dry-run    Show which files would change without deploying or reloading.
-  --no-reload  Deploy files without disabling and re-enabling the extension.
-  -h, --help   Show this help.
+  --dry-run       Show which files would change without deploying or reloading.
+  --no-reload     Deploy files without disabling and re-enabling the extension.
+  --force-reload  Also force GNOME Shell to re-read metadata.json without
+                  logging out. See the note printed after a metadata change.
+  -h, --help      Show this help.
 EOF
 }
+
+force_reload=false
 
 while (($# > 0)); do
     case "$1" in
@@ -30,6 +34,9 @@ while (($# > 0)); do
             ;;
         --no-reload)
             reload_extension=false
+            ;;
+        --force-reload)
+            force_reload=true
             ;;
         -h|--help)
             usage
@@ -101,7 +108,14 @@ if "$dry_run"; then
 fi
 
 mkdir -p -- "$EXTENSIONS_DIR" "$TARGET_DIR"
-rsync -a --delete "${stage_dir}/" "${TARGET_DIR}/"
+# -i itemizes the transfer so we can tell whether metadata.json itself changed.
+# Note: -n is rsync's --dry-run, so it must NOT be used for the real deploy.
+rsync_out="$(rsync -ai --delete "${stage_dir}/" "${TARGET_DIR}/")"
+printf '%s\n' "$rsync_out"
+metadata_changed=false
+if grep -Eq '(^|[^a-zA-Z])metadata\.json$' <<<"$rsync_out"; then
+    metadata_changed=true
+fi
 printf 'Deployed %s to %s\n' "$UUID" "$TARGET_DIR"
 
 if ! "$reload_extension"; then
@@ -120,6 +134,32 @@ if gnome-extensions list --enabled | grep -Fxq "$UUID"; then
     printf 'Extension disabled and enabled successfully.\n'
 else
     printf 'Extension was disabled before deployment and remains disabled.\n'
+fi
+
+if [[ "$metadata_changed" == true ]]; then
+    # GNOME Shell parses metadata.json in createExtensionObject(), reached only
+    # via reloadExtension(). `gnome-extensions disable/enable` goes through
+    # _onEnabledExtensionsChanged, which reuses the cached metadata object, and
+    # the ReloadExtension D-Bus method is a deprecated no-op in GNOME 51. So a
+    # shell restart is normally required for a shell-version change to apply.
+    printf '\nmetadata.json changed. GNOME Shell cached the old metadata at startup;\n'
+    printf 'disable/enable alone will NOT apply it (ReloadExtension is a no-op).\n'
+    if "$force_reload"; then
+        # Toggling the version-validation key makes _onVersionValidationChanged
+        # call reloadExtension() for every extension, which re-reads metadata.
+        if command -v gsettings >/dev/null 2>&1; then
+            printf 'Forcing a full reload via disable-extension-version-validation...\n'
+            gsettings set org.gnome.shell disable-extension-version-validation true
+            gsettings set org.gnome.shell disable-extension-version-validation false
+            printf 'Done. NOTE: that toggle also drops every OUT OF DATE extension\n'
+            printf 'from org.gnome.shell enabled-extensions; check it with:\n'
+            printf '  gsettings get org.gnome.shell enabled-extensions\n'
+        else
+            printf 'gsettings is unavailable; log out and back in instead.\n'
+        fi
+    else
+        printf 'Log out and back in to apply it, or re-run with --force-reload.\n'
+    fi
 fi
 
 if [[ "${XDG_SESSION_TYPE:-}" == wayland ]]; then
