@@ -38,9 +38,26 @@ See [CHANGELOG.md](CHANGELOG.md) for the release summary.
 - GNOME Shell 49, 50 and 51
 - Wayland is supported.
 - GNOME Shell only loads an extension whose `metadata.json` lists the running
-  shell's major version. After a GNOME major upgrade, add the new major version
-  to `shell-version` and restart GNOME Shell, otherwise the extension is
-  reported as `OUT OF DATE` and is not loaded.
+  shell's major version. The check is
+  `shell-version.some(v => v.startsWith(major))`, so wildcards such as `"*"` and
+  `"5*"` do not work: every supported major version must be listed explicitly.
+  After a GNOME major upgrade, add the new major version to `shell-version`,
+  otherwise the extension is reported as `OUT OF DATE` and is never loaded.
+- Applying a new `shell-version` usually does not need a logout. `gnome-extensions
+  enable`/`disable` reuses the cached metadata and is not enough, and the
+  `ReloadExtension` D-Bus method is a no-op in 49+, but toggling
+  `org.gnome.shell disable-extension-version-validation` makes the shell call
+  `reloadExtension()`, which re-reads `metadata.json` from disk. `./deploy.sh
+  --force-reload` does this for you and restores the key to `false`. Logging out
+  and back in is a fallback that always works.
+- A logout *is* required when the `version` field of `metadata.json` changes:
+  `unloadExtension()` records the old value and `_canLoad()` then refuses the new
+  one, logging "A different version was loaded previously. You need to log out
+  for changes to take effect." This project's `metadata.json` has no `version`
+  field, so `shell-version` changes reload cleanly.
+- Toggling `disable-extension-version-validation` reloads every extension and
+  permanently drops any extension that is out of date from `enabled-extensions`.
+  Do not leave the key set to `true` as a permanent workaround.
 - The extension uses GNOME Shell's built-in screenshot API; no `gnome-screenshot`, `grim`, or `slurp` package is required.
 
 ## Installation

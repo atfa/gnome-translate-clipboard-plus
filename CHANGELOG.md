@@ -9,9 +9,21 @@
   load an extension whose `metadata.json` does not list the running shell's
   major version. No JavaScript API changes were required: every Shell, St, Meta,
   Clutter, PopupMenu and Soup API used by the extension is unchanged in 51.
-- After a GNOME major upgrade, `metadata.json` is only re-read when GNOME Shell
-  restarts, so a shell restart (log out and back in on Wayland) is required for
-  the new `shell-version` to take effect.
+- Applying a new `shell-version` does not require a logout. `metadata.json` is
+  cached at shell startup, so `gnome-extensions enable`/`disable` is not enough
+  and the `ReloadExtension` D-Bus method is a no-op in 49+, but toggling
+  `org.gnome.shell disable-extension-version-validation` makes the shell call
+  `reloadExtension()`, which re-reads `metadata.json` from disk. `./deploy.sh
+  --force-reload` does that and restores the key to `false`. A logout stays as a
+  fallback. A logout is required only when the `version` field of
+  `metadata.json` changes, because `_canLoad()` rejects a changed version; this
+  project has no `version` field, so `shell-version` changes reload cleanly.
+- `deploy.sh` excluded `.git/`, which does not match the `.git` *file* used by a
+  git worktree, so the worktree pointer file was installed into the extension
+  directory. It now excludes `.git` by name.
+- `deploy.sh` used `rsync -ain` for the real deployment. `-n` is rsync's
+  `--dry-run`, so files were reported as transferred without being written. The
+  real deploy now uses `rsync -ai --delete`.
 
 ## 1.0.0 - 2026-08-27
 
