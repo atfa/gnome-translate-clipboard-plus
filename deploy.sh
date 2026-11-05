@@ -82,6 +82,7 @@ trap cleanup EXIT
 rsync -a \
     --exclude='.git' \
     --exclude='.gitignore' \
+    --exclude='.duo' \
     --exclude='deploy.sh' \
     --exclude='build.sh' \
     --exclude='README.md' \
