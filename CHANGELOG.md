@@ -4,6 +4,16 @@
 
 ### Fixed
 
+- Global shortcuts stopped working after an extension reload. Mutter keys its
+  keybinding table by name and that table is global, so an entry can outlive the
+  indicator that registered it. `_removeKeybindings()` was guarded by a
+  per-instance `_keybindingsRegistered` flag, so a new instance skipped the
+  removal, `add_keybinding()` then failed with "Trying to re-add keybinding",
+  and `Main.wm.addKeybinding()` skips `allowKeybinding()` when the add fails.
+  The keybinding stayed registered but allowed in no action mode, so the shortcut
+  was inert until the shell restarted. `_setupKeybindings()` now removes the
+  names unconditionally before adding, tracks registration per name, and checks
+  the return value of `addKeybinding()` and logs when a shortcut is not active.
 - Added GNOME Shell 51 to `shell-version`. On GNOME Shell 51 the extension was
   reported as `OUT OF DATE` and was never loaded, because GNOME Shell refuses to
   load an extension whose `metadata.json` does not list the running shell's
