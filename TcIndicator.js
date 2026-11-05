@@ -91,7 +91,7 @@ export const TcIndicator = GObject.registerClass(
                 can_focus: false
             });
             keybind.add_child(new St.Label({
-                text: "Translate selected",
+                text: _('Translate selected'),
                 x_align: Clutter.ActorAlign.START
             }));
             let key0 = this._settings.get_strv(Fields.TRANS_SELECTED)[0];
@@ -120,7 +120,7 @@ export const TcIndicator = GObject.registerClass(
             screenshotKeybind.add_child(this._screenshotKeyLabel);
             this.menu.addMenuItem(screenshotKeybind);
 
-            let settingsItem = new PopupMenu.PopupMenuItem('Settings');
+            let settingsItem = new PopupMenu.PopupMenuItem(_('Settings'));
             this.menu.addMenuItem(settingsItem);
             settingsItem.connect('activate', this._openPrefs.bind(this));
 
