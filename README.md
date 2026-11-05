@@ -65,6 +65,29 @@ For a one-off test without editing `metadata.json`, you can disable the gate
 ```bash
 gsettings set org.gnome.shell disable-extension-version-validation true
 ```
+
+Beware that toggling that key makes GNOME Shell drop every `OUT OF DATE`
+extension from `org.gnome.shell enabled-extensions`, permanently, so it is not
+a good long-term workaround.
+
+### Applying a metadata change without logging out
+
+GNOME Shell parses `metadata.json` in `createExtensionObject()`, which is only
+reached from `reloadExtension()`. `gnome-extensions disable/enable` goes through
+`_onEnabledExtensionsChanged`, which reuses the cached metadata object, and the
+`ReloadExtension` D-Bus method is a deprecated no-op in GNOME 51. So a plain
+disable/enable will not apply a `shell-version` change.
+
+`./deploy.sh --force-reload` forces the reload by toggling
+`disable-extension-version-validation`, which makes
+`_onVersionValidationChanged()` call `reloadExtension()` for every extension.
+
+One boundary matters: `unloadExtension()` records `extension.metadata.version`,
+and `_canLoad()` then refuses to reload when that value changes, logging
+"A different version was loaded previously. You need to log out for changes to
+take effect." This extension has no `version` field, so the comparison is
+`undefined === undefined` and the reload succeeds. In other words: changing
+`shell-version` needs no logout, but adding and bumping a `version` field does.
 - The extension uses GNOME Shell's built-in screenshot API; no `gnome-screenshot`, `grim`, or `slurp` package is required.
 
 ## Installation
