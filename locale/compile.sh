@@ -63,8 +63,8 @@ if ((${#languages[@]} == 0)); then
     exit 1
 fi
 
-# The template is the union of everything xgettext finds in the sources and the
-# strings that are only translated at runtime (see locale/dynamic.pot).
+# The template is everything xgettext finds in the sources. Strings translated
+# from a variable are marked with N_() in the sources so the extractor sees them.
 template="$(mktemp)"
 trap 'rm -f -- "$template"' EXIT
 xgettext --language=JavaScript --keyword=_ --keyword=N_ --from-code=UTF-8 \
@@ -78,8 +78,6 @@ xgettext --language=JavaScript --keyword=_ --keyword=N_ --from-code=UTF-8 \
     config/constants.js
 # xgettext has no --charset option, so fix the placeholder it writes.
 sed -i 's/charset=CHARSET/charset=UTF-8/' "$template"
-msgcat --use-first "$template" "${LOCALE_DIR}/dynamic.pot" -o "${template}.full"
-mv -- "${template}.full" "$template"
 
 status=0
 for language in "${languages[@]}"; do

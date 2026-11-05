@@ -155,7 +155,7 @@ installed extension directory, so the interface follows the desktop language.
 
 | Language | Catalog | Coverage |
 | --- | --- | --- |
-| Chinese (China) | `locale/zh_CN/` | complete |
+| Chinese (China) | `locale/zh_CN/` | complete (104 strings) |
 | Japanese | `locale/ja/` | empty stub, falls back to English |
 | Korean | `locale/ko/` | empty stub, falls back to English |
 
@@ -172,9 +172,17 @@ effect until it is compiled:
 `locale/compile.sh --check` is run by `build.sh`, so a release build fails if a
 `.mo` is out of date or a string marked for translation has no Chinese text.
 
-Strings that are only translated at runtime, such as the LLM provider display
-names in `llm.js`, are invisible to `xgettext`. They are listed in
-`locale/dynamic.pot`, which both scripts merge into the template.
+Provider display names in `llm.js` are translated at display time from a
+variable, which `xgettext` cannot see. They are wrapped in the `N_()` no-op
+marker so the extractor picks them up (`--keyword=N_` is set in both scripts);
+adding a provider without a `N_()` wrapper leaves its name untranslated and is
+the one way a string can escape the coverage check.
+
+`google.js`, `llm.js` and `vision.js` are loaded by both the shell process and
+the preferences process, so they translate through `utils.gettext()`, which
+calls `GLib.dgettext()` with the domain named in `config/constants.js`. The
+shell-only `gettext` helper from
+`resource:///org/gnome/shell/extensions/extension.js` is not usable there.
 
 The `summary` and `description` in `schemas/*.gschema.xml` are translated by the
 system `gnome-shell-extensions` domain, not by this extension's catalog, so

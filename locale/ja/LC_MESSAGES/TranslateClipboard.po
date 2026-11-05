@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: translate-clipboard-plus@atfa.github.io\n"
 "Report-Msgid-Bugs-To: https://github.com/atfa/gnome-translate-clipboard-plus/"
 "issues\n"
-"POT-Creation-Date: 2026-11-05 22:54+0800\n"
+"POT-Creation-Date: 2026-11-05 23:10+0800\n"
 "PO-Revision-Date: 2026-11-05 23:10+0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -308,7 +308,7 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: TcIndicator.js:405
+#: TcIndicator.js:405 vision.js:81
 msgid "No text was recognized in the screenshot."
 msgstr ""
 
@@ -392,6 +392,54 @@ msgstr ""
 msgid "Translation result could not be displayed."
 msgstr ""
 
-#: llm.js:162
+#: google.js:46 llm.js:278
+msgid "Invalid proxy protocol"
+msgstr ""
+
+#: google.js:59 llm.js:298
+msgid "Failed to connect: "
+msgstr ""
+
+#: google.js:69 llm.js:306
+msgid "Unable to send libsoup json message: "
+msgstr ""
+
+#: google.js:81
+msgid "404 (Page not found)"
+msgstr ""
+
+#: llm.js:43
+msgid "OpenRouter"
+msgstr ""
+
+#: llm.js:83
+msgid "Google Gemini"
+msgstr ""
+
+#: llm.js:107
+msgid "OpenAI"
+msgstr ""
+
+#: llm.js:126
+msgid "DeepSeek"
+msgstr ""
+
+#: llm.js:146
+msgid "Ollama"
+msgstr ""
+
+#: llm.js:175
 msgid "Custom (compatible with OpenAI)"
+msgstr ""
+
+#: llm.js:287
+msgid "Unable to create request for: "
+msgstr ""
+
+#: vision.js:32
+msgid "Vision endpoint and model are required."
+msgstr ""
+
+#: vision.js:59
+msgid "Unable to create vision request for: "
 msgstr ""

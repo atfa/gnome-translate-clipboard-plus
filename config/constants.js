@@ -26,6 +26,12 @@ export const Fields = {
     PANEL_MONITOR: 'panel-monitor'
 };
 
+// Must match "gettext-domain" in metadata.json. Modules that are shared by the
+// shell process and the preferences process cannot use the gettext wrapper from
+// resource:///org/gnome/shell/extensions/extension.js, so they translate
+// through GLib.dgettext() with this domain. See utils.gettext().
+export const GETTEXT_DOMAIN = 'TranslateClipboard';
+
 export const defaultConfig = {
     'endpoint': '',
     'model': '',

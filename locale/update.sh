@@ -36,8 +36,6 @@ xgettext --language=JavaScript --keyword=_ --keyword=N_ --from-code=UTF-8 \
     config/constants.js
 # xgettext has no --charset option, so fix the placeholder it writes.
 sed -i 's/charset=CHARSET/charset=UTF-8/' "$template"
-msgcat --use-first "$template" "${LOCALE_DIR}/dynamic.pot" -o "${template}.full"
-mv -- "${template}.full" "$template"
 
 languages=("$@")
 if ((${#languages[@]} == 0)); then

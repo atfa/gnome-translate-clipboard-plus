@@ -1,6 +1,26 @@
 import GLib from 'gi://GLib';
 import Secret from 'gi://Secret';
 
+import {GETTEXT_DOMAIN} from './config/constants.js';
+
+/**
+ * Translate a string in this extension's gettext domain.
+ *
+ * The shell helper exported as `gettext` by
+ * resource:///org/gnome/shell/extensions/extension.js cannot be used here:
+ * google.js, llm.js and vision.js are loaded from both the shell process
+ * (TcIndicator.js) and the preferences process (prefs.js), and that resource
+ * path is only guaranteed to resolve in the shell. ExtensionBase
+ * .initTranslations() has already called bindtextdomain() for this domain in
+ * both processes, so GLib.dgettext() finds the same catalog everywhere.
+ *
+ * @param {string} str - the string to translate
+ * @returns {string} the translation, or `str` when there is none
+ */
+export function gettext(str) {
+    return GLib.dgettext(GETTEXT_DOMAIN, str);
+}
+
 export function readConfig(settings, key) {
     const variant = settings.get_value(key);
     const data = variant.recursiveUnpack();
