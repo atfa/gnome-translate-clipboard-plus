@@ -4,6 +4,14 @@
 
 ### Fixed
 
+- The global shortcuts stopped summoning the translation panel on GNOME Shell
+  51. `St.BoxLayout` no longer has a `vertical` property in GNOME 51; it takes
+  `orientation` instead. The five `new St.BoxLayout({ vertical: true })` calls in
+  `TranslateWindow.js` threw `No property vertical on StBoxLayout` from
+  `_createWindow()`, so pressing the shortcut ran the handler but the panel was
+  never created and nothing appeared. They now pass
+  `orientation: Clutter.Orientation.VERTICAL`, which is what GNOME Shell's own
+  interface uses.
 - Global shortcuts stopped working after an extension reload. Mutter keys its
   keybinding table by name and that table is global, so an entry can outlive the
   indicator that registered it. `_removeKeybindings()` was guarded by a
