@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: translate-clipboard-plus@atfa.github.io\n"
 "Report-Msgid-Bugs-To: https://github.com/atfa/gnome-translate-clipboard-plus/"
 "issues\n"
-"POT-Creation-Date: 2026-11-05 23:10+0800\n"
+"POT-Creation-Date: 2026-11-06 08:39+0800\n"
 "PO-Revision-Date: 2026-11-05 23:10+0800\n"
 "Last-Translator: atfa <atfa@github.io>\n"
 "Language-Team: atfa <atfa@github.io>\n"
@@ -26,50 +26,50 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: prefs.js:29
+#: prefs.js:46
 msgid "General"
 msgstr "常规"
 
-#: prefs.js:38 TcIndicator.js:112
+#: prefs.js:55 TcIndicator.js:112
 msgid "Screenshot translation"
 msgstr "截图翻译"
 
-#: prefs.js:39
+#: prefs.js:56
 msgid ""
 "Recognize screenshot text with an OpenAI-compatible vision model, then "
 "translate it with the selected translation engine."
 msgstr ""
 "使用兼容 OpenAI 的视觉模型识别截图中的文字，再使用所选翻译引擎进行翻译。"
 
-#: prefs.js:44
+#: prefs.js:61
 msgid "Enable or disable translation"
 msgstr "启用或禁用翻译"
 
-#: prefs.js:45
+#: prefs.js:62
 msgid "Whether to automatically translate selected text"
 msgstr "是否自动翻译选中的文本"
 
-#: prefs.js:48 TcIndicator.js:77
+#: prefs.js:65 TcIndicator.js:77
 msgid "Brief mode"
 msgstr "简洁模式"
 
-#: prefs.js:52
+#: prefs.js:69
 msgid "Auto hide"
 msgstr "自动隐藏"
 
-#: prefs.js:79
+#: prefs.js:96
 msgid "Set Shortcut"
 msgstr "设置快捷键"
 
-#: prefs.js:87
+#: prefs.js:104
 msgid "Cancel"
 msgstr "取消"
 
-#: prefs.js:91
+#: prefs.js:108
 msgid "Apply"
 msgstr "应用"
 
-#: prefs.js:106
+#: prefs.js:123
 msgid ""
 "Press the desired shortcut keys.\n"
 "Press Esc to cancel, Backspace to clear current input."
@@ -77,196 +77,230 @@ msgstr ""
 "请按下所需的快捷键。\n"
 "按 Esc 取消，按 Backspace 清除当前输入。"
 
-#: prefs.js:116
+#: prefs.js:133
 msgid "Press a key..."
 msgstr "按下一个键…"
 
-#: prefs.js:133 prefs.js:217 TcIndicator.js:116 TcIndicator.js:209
+#: prefs.js:150 prefs.js:234 TcIndicator.js:116 TcIndicator.js:209
 #: TcIndicator.js:211
 msgid "Disabled"
 msgstr "已禁用"
 
-#: prefs.js:155
+#: prefs.js:172
 msgid "Cleared (Press Apply)"
 msgstr "已清除（请点击“应用”）"
 
-#: prefs.js:195
+#: prefs.js:212
 msgid "Translate the selected text"
 msgstr "翻译选中的文本"
 
-#: prefs.js:196
+#: prefs.js:213
 msgid "Shortcut keys for translating selected text"
 msgstr "翻译选中文本的快捷键"
 
-#: prefs.js:208 TcIndicator.js:85
+#: prefs.js:225 TcIndicator.js:85
 msgid "Screenshot and translate"
 msgstr "截图并翻译"
 
-#: prefs.js:209
+#: prefs.js:226
 msgid "Drag to select an area, recognize its text, and translate it."
 msgstr "拖动以选择一个区域，识别其中的文字并翻译。"
 
-#: prefs.js:236
+#: prefs.js:253
 msgid "Vision endpoint"
 msgstr "视觉模型接口地址"
 
-#: prefs.js:240
+#: prefs.js:257
 msgid "Vision model"
 msgstr "视觉模型"
 
-#: prefs.js:244
+#: prefs.js:261
 msgid "Vision API key"
 msgstr "视觉模型 API 密钥"
 
-#: prefs.js:265
+#: prefs.js:282
 msgid "TTS Voice"
 msgstr "语音朗读"
 
-#: prefs.js:266
+#: prefs.js:283
 msgid "Text-to-speech"
 msgstr "文本转语音"
 
-#: prefs.js:296
+#: prefs.js:313
 msgid "Auto hide mode"
 msgstr "自动隐藏模式"
 
-#: prefs.js:297
+#: prefs.js:314
 msgid "How to auto hide the translation window"
 msgstr "翻译窗口的自动隐藏方式"
 
-#: prefs.js:302
+#: prefs.js:319
 msgid "Timeout"
 msgstr "超时后隐藏"
 
-#: prefs.js:303
+#: prefs.js:320
 msgid "Click outside"
 msgstr "点击窗口外部"
 
-#: prefs.js:304
+#: prefs.js:321
 msgid "Both"
 msgstr "两者"
 
-#: prefs.js:334
+#: prefs.js:351
 msgid "Network proxy"
 msgstr "网络代理"
 
-#: prefs.js:343
+#: prefs.js:360
 msgid "Engine"
 msgstr "引擎"
 
-#: prefs.js:344
+#: prefs.js:361
 msgid "Translation engine"
 msgstr "翻译引擎"
 
-#: prefs.js:372 TcIndicator.js:660 TcIndicator.js:723
+#: prefs.js:389 TcIndicator.js:660 TcIndicator.js:723
 msgid "Auto"
 msgstr "自动"
 
-#: prefs.js:389 TcIndicator.js:65
+#: prefs.js:406 TcIndicator.js:65
 msgid "Source language"
 msgstr "源语言"
 
-#: prefs.js:390
+#: prefs.js:407
 msgid "Language code (e.g., en, zh, auto for auto-detect)"
 msgstr "语言代码（如 en、zh，auto 表示自动检测）"
 
-#: prefs.js:407 TcIndicator.js:66
+#: prefs.js:424 TcIndicator.js:66
 msgid "Primary target language"
 msgstr "主要目标语言"
 
-#: prefs.js:408
+#: prefs.js:425
 msgid "Primary target language code (higher priority)"
 msgstr "主要目标语言代码（优先级更高）"
 
-#: prefs.js:427 TcIndicator.js:672 TcIndicator.js:721
+#: prefs.js:444 TcIndicator.js:672 TcIndicator.js:721
 msgid "None"
 msgstr "无"
 
-#: prefs.js:437 TcIndicator.js:67
+#: prefs.js:454 TcIndicator.js:67
 msgid "Secondary target language"
 msgstr "次要目标语言"
 
-#: prefs.js:438
+#: prefs.js:455
 msgid "Secondary target language code (lower priority, optional)"
 msgstr "次要目标语言代码（优先级较低，可选）"
 
-#: prefs.js:478
+#: prefs.js:495
 msgid "LLM"
 msgstr "大语言模型"
 
-#: prefs.js:495
+#: prefs.js:512
 msgid "Provider"
 msgstr "服务提供商"
 
-#: prefs.js:496
+#: prefs.js:513
 msgid "LLM service provider"
 msgstr "大语言模型服务提供商"
 
-#: prefs.js:502
+#: prefs.js:519
 msgid "Endpoint"
 msgstr "接口地址"
 
-#: prefs.js:503
+#: prefs.js:520
 msgid "Endpoint for the LLM service"
 msgstr "大语言模型服务的接口地址"
 
-#: prefs.js:510
+#: prefs.js:527
 msgid "Undo"
 msgstr "撤销"
 
-#: prefs.js:518
+#: prefs.js:535
 msgid "Model"
 msgstr "模型"
 
-#: prefs.js:519
+#: prefs.js:536
 msgid "Model name/identifier for the LLM service"
 msgstr "大语言模型服务的模型名称或标识符"
 
-#: prefs.js:526
+#: prefs.js:543
 msgid "Next model"
 msgstr "下一个模型"
 
-#: prefs.js:532
+#: prefs.js:549
 msgid "More models"
 msgstr "更多模型"
 
-#: prefs.js:541
+#: prefs.js:555
+msgid "Check whether the model is available"
+msgstr "检测模型是否可用"
+
+#: prefs.js:565
 msgid "API Key"
 msgstr "API 密钥"
 
-#: prefs.js:548
+#: prefs.js:572
 msgid "New"
 msgstr "注册新账号"
 
-#: prefs.js:549
+#: prefs.js:573
 msgid "Signup"
 msgstr "注册"
 
-#: prefs.js:557
+#: prefs.js:583
+msgid "Model availability"
+msgstr "模型可用性"
+
+#: prefs.js:584
+msgid ""
+"Send one minimal request to check the endpoint, model and API key. Saving is "
+"never blocked by the result."
+msgstr ""
+"发送一次最小请求，检测接口地址、模型和 API 密钥是否可用。检测结果不会阻止保"
+"存。"
+
+#: prefs.js:601
 msgid "Prompt template"
 msgstr "提示词模板"
 
-#: prefs.js:577
+#: prefs.js:621
 msgid "Reset All Settings"
 msgstr "重置所有设置"
 
-#: prefs.js:721
+#: prefs.js:726
+msgid "A model name is required to check the model."
+msgstr "检测模型需要先填写模型名称。"
+
+#: prefs.js:738
+msgid "Checking the model…"
+msgstr "正在检测模型…"
+
+#: prefs.js:756
+#, javascript-format
+msgid "Model is available: %1$s (%2$s ms)"
+msgstr "模型可用：%1$s（%2$s 毫秒）"
+
+#: prefs.js:759
+#, javascript-format
+msgid "Model is not available: %1$s"
+msgstr "模型不可用：%1$s"
+
+#: prefs.js:848
 msgid "About"
 msgstr "关于"
 
-#: prefs.js:728 TranslateWindow.js:206
+#: prefs.js:855 TranslateWindow.js:206
 msgid "Translate Clipboard Plus"
 msgstr "Translate Clipboard Plus"
 
-#: prefs.js:729
+#: prefs.js:856
 msgid "Clipboard translation, screenshot OCR, and reverse checks."
 msgstr "剪贴板翻译、截图文字识别（OCR）与反向翻译检查。"
 
-#: prefs.js:733
+#: prefs.js:860
 msgid "Privacy Notice"
 msgstr "隐私说明"
 
-#: prefs.js:733
+#: prefs.js:860
 msgid ""
 "This extension needs clipboard access and may send clipboard contents to "
 "third-party translation, text-to-speech, or LLM services."
@@ -274,35 +308,35 @@ msgstr ""
 "本扩展需要访问剪贴板，并可能将剪贴板内容发送到第三方翻译、文本转语音或大语言"
 "模型服务。"
 
-#: prefs.js:734
+#: prefs.js:861
 msgid "Credits"
 msgstr "致谢"
 
-#: prefs.js:734
+#: prefs.js:861
 msgid "Forked from Translate Clipboard by lsnow and extended by atfa."
 msgstr "本项目派生自 lsnow 的 Translate Clipboard，并由 atfa 扩展功能。"
 
-#: prefs.js:740
+#: prefs.js:867
 msgid "Extension Page"
 msgstr "扩展页面"
 
-#: prefs.js:741
+#: prefs.js:868
 msgid "Source Code"
 msgstr "源代码"
 
-#: prefs.js:742
+#: prefs.js:869
 msgid "Report an Issue"
 msgstr "报告问题"
 
-#: prefs.js:743
+#: prefs.js:870
 msgid "License"
 msgstr "许可证"
 
-#: prefs.js:743
+#: prefs.js:870
 msgid "GNU General Public License v3.0"
 msgstr "GNU 通用公共许可证 v3.0"
 
-#: prefs.js:761
+#: prefs.js:888
 msgid "Open"
 msgstr "打开"
 
@@ -402,15 +436,15 @@ msgstr "译文"
 msgid "Translation result could not be displayed."
 msgstr "无法显示翻译结果。"
 
-#: google.js:46 llm.js:278
+#: google.js:46 llm.js:299 llm.js:427
 msgid "Invalid proxy protocol"
 msgstr "代理协议无效"
 
-#: google.js:59 llm.js:298
+#: google.js:59 llm.js:320 llm.js:486
 msgid "Failed to connect: "
 msgstr "连接失败："
 
-#: google.js:69 llm.js:306
+#: google.js:69 llm.js:328 llm.js:472
 msgid "Unable to send libsoup json message: "
 msgstr "无法发送 JSON 请求："
 
@@ -418,33 +452,57 @@ msgstr "无法发送 JSON 请求："
 msgid "404 (Page not found)"
 msgstr "404（页面未找到）"
 
-#: llm.js:43
+#: llm.js:47
 msgid "OpenRouter"
 msgstr "OpenRouter"
 
-#: llm.js:83
+#: llm.js:87
 msgid "Google Gemini"
 msgstr "Google Gemini"
 
-#: llm.js:107
+#: llm.js:121
 msgid "OpenAI"
 msgstr "OpenAI"
 
-#: llm.js:126
+#: llm.js:140
 msgid "DeepSeek"
 msgstr "DeepSeek"
 
-#: llm.js:146
+#: llm.js:160
 msgid "Ollama"
 msgstr "Ollama"
 
-#: llm.js:175
+#: llm.js:192
 msgid "Custom (compatible with OpenAI)"
 msgstr "自定义（兼容 OpenAI）"
 
-#: llm.js:287
+#: llm.js:309 llm.js:438
 msgid "Unable to create request for: "
 msgstr "无法创建请求："
+
+#: llm.js:415
+msgid "An endpoint is required to check the model."
+msgstr "检测模型需要先填写接口地址。"
+
+#: llm.js:485
+msgid "The request timed out. Check the endpoint and your network."
+msgstr "请求超时，请检查接口地址和网络。"
+
+#: llm.js:553
+msgid "The API key was rejected."
+msgstr "API 密钥被拒绝。"
+
+#: llm.js:555
+msgid "The model name was not found at this endpoint."
+msgstr "该接口地址下没有找到这个模型名称。"
+
+#: llm.js:557
+msgid "The service is rate limiting this key."
+msgstr "服务对该密钥限流中。"
+
+#: llm.js:559
+msgid "The service reported an internal error."
+msgstr "服务报告了内部错误。"
 
 #: vision.js:32
 msgid "Vision endpoint and model are required."
@@ -453,6 +511,12 @@ msgstr "需要填写视觉模型接口地址和视觉模型。"
 #: vision.js:59
 msgid "Unable to create vision request for: "
 msgstr "无法创建视觉模型请求："
+
+#~ msgid "Model is available"
+#~ msgstr "模型可用"
+
+#~ msgid "Model is not available"
+#~ msgstr "模型不可用"
 
 #~ msgid "Failed to extract translation. Please check your language settings."
 #~ msgstr "无法提取翻译结果，请检查语言设置。"

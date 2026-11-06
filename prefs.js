@@ -10,7 +10,7 @@ import {ExtensionPreferences, gettext as _} from 'resource:///org/gnome/Shell/Ex
 
 import * as Voices from './config/voices.js';
 import {Fields, defaultConfig} from './config/constants.js';
-import {providers as Providers} from './llm.js';
+import {providers as Providers, ModelProber} from './llm.js';
 import * as Utils from './utils.js';
 import * as Languages from './languages.js';
 
@@ -18,6 +18,23 @@ const SOURCE_URL = 'https://github.com/atfa/gnome-translate-clipboard-plus';
 const ISSUES_URL = `${SOURCE_URL}/issues`;
 const LICENSE_URL = `${SOURCE_URL}/blob/main/LICENSE`;
 const EXTENSION_PAGE_URL = 'https://extensions.gnome.org/extension/4097/translate-clipboard/';
+
+/**
+ * Fill positional `%1$s`/`%2$s` placeholders in a translated string.
+ *
+ * GJS has no `String.prototype.format`, and concatenating a translated prefix
+ * with a value locks the word order to English, so translatable results are
+ * written as one message with positional placeholders and filled here.
+ *
+ * @param {string} template - text marked for translation
+ * @param {...string} args - values for `%1$s`, `%2$s`, ...
+ * @returns {string} the text with every placeholder replaced
+ */
+function fill(template, ...args) {
+    return args.reduce(
+        (text, arg, index) => text.replaceAll(`%${index + 1}$s`, `${arg}`),
+        template);
+}
 
 class GeneralPage extends Adw.PreferencesPage {
     static {
@@ -531,8 +548,15 @@ class AiPage extends Adw.PreferencesPage {
             valign: Gtk.Align.CENTER,
             tooltip_text: _('More models'),
         });
+        this._probeButton = new Gtk.Button({
+            icon_name: 'network-server-symbolic',
+            css_classes: ['flat', 'circular'],
+            valign: Gtk.Align.CENTER,
+            tooltip_text: _('Check whether the model is available'),
+        });
         modelRow.add_suffix(this._nextButton);
         modelRow.add_suffix(this._moreButton);
+        modelRow.add_suffix(this._probeButton);
         this._aiGroup.add(modelRow);
         this._modelRow = modelRow;
 
@@ -551,6 +575,26 @@ class AiPage extends Adw.PreferencesPage {
         apiKeyRow.add_suffix(this._signupButton);
         this._aiGroup.add(apiKeyRow);
         this._apiKeyRow = apiKeyRow;
+
+        // Availability probe. Informational only: nothing here gates saving, a
+        // model that fails the probe can still be saved and used.
+        this._prober = new ModelProber();
+        this._probeRow = new Adw.ActionRow({
+            title: _('Model availability'),
+            subtitle: _('Send one minimal request to check the endpoint, model and API key. Saving is never blocked by the result.'),
+        });
+        this._probeIcon = new Gtk.Image({
+            valign: Gtk.Align.CENTER,
+            visible: false,
+        });
+        this._probeSpinner = new Gtk.Spinner({
+            valign: Gtk.Align.CENTER,
+            visible: false,
+        });
+        this._probeRow.add_prefix(this._probeIcon);
+        this._probeRow.add_suffix(this._probeSpinner);
+        this._aiGroup.add(this._probeRow);
+        this._probeIdleSubtitle = this._probeRow.get_subtitle();
 
         // Prompt.
         this._extraGroup = new Adw.PreferencesGroup({
@@ -658,6 +702,88 @@ class AiPage extends Adw.PreferencesPage {
             const launcher = new Gtk.UriLauncher({ uri: modelsUri ?? '' });
             launcher.launch(null, null, null, null);
         });
+
+        this._probeButton.connect('clicked', () => { this._probeModel(); });
+        this._prober.connect('completed', (_prober, reply) => {
+            this._finishProbe(true, reply);
+        });
+        this._prober.connect('error', (_prober, message) => {
+            this._finishProbe(false, message);
+        });
+        this.connect('destroy', () => this._prober.cleanup());
+    }
+
+    /**
+     * Probe the endpoint, model and key currently on screen.
+     *
+     * Nothing is written and nothing is gated: the probe reports, the user
+     * saves whatever they like.
+     */
+    _probeModel() {
+        const endpoint = this._endpointRow.get_text().trim();
+        const model = this._modelRow.get_text().trim();
+        if (model === '') {
+            this._showProbeResult(false, _('A model name is required to check the model.'));
+            return;
+        }
+
+        const apiKey = this._apiKeyRow.get_text()
+            || Providers[this._provider].getApiKey() || '';
+        this._probeModelName = model;
+        this._probeStarted = GLib.get_monotonic_time();
+        this._probeButton.set_sensitive(false);
+        this._probeIcon.set_visible(false);
+        this._probeSpinner.set_visible(true);
+        this._probeSpinner.start();
+        this._probeRow.set_subtitle(_('Checking the model…'));
+        this._prober.probe({
+            provider: this._provider,
+            endpoint,
+            model,
+            apiKey,
+            proxy: this._settings.get_string(Fields.PROXY),
+        });
+    }
+
+    _finishProbe(available, detail) {
+        this._probeSpinner.stop();
+        this._probeSpinner.set_visible(false);
+        this._probeButton.set_sensitive(true);
+
+        if (available) {
+            const elapsed = Math.round((GLib.get_monotonic_time() - this._probeStarted) / 1000);
+            this._showProbeResult(true,
+                fill(_('Model is available: %1$s (%2$s ms)'), this._probeModelName, elapsed));
+        } else {
+            this._showProbeResult(false,
+                fill(_('Model is not available: %1$s'), detail));
+        }
+    }
+
+    _showProbeResult(available, text) {
+        this._probeRow.remove_css_class('success');
+        this._probeRow.remove_css_class('error');
+        this._probeIcon.remove_css_class('success');
+        this._probeIcon.remove_css_class('error');
+        this._probeRow.set_subtitle(text);
+        if (available === null) {
+            this._probeIcon.set_visible(false);
+            return;
+        }
+        this._probeIcon.set_from_icon_name(
+            available ? 'object-select-symbolic' : 'process-stop-symbolic');
+        this._probeIcon.add_css_class(available ? 'success' : 'error');
+        this._probeRow.add_css_class(available ? 'success' : 'error');
+        this._probeIcon.set_visible(true);
+    }
+
+    _resetProbe() {
+        this._prober.cleanup();
+        this._probeSpinner.stop();
+        this._probeSpinner.set_visible(false);
+        this._probeButton.set_sensitive(true);
+        this._probeIcon.set_visible(false);
+        this._showProbeResult(null, this._probeIdleSubtitle);
     }
 
     _writeSettings() {
@@ -679,6 +805,7 @@ class AiPage extends Adw.PreferencesPage {
     }
 
     _refresh() {
+        this._resetProbe();
         const configs = Utils.readConfig(this._settings, 'provider-settings');
         const params = configs[this._provider] ?? {};
         const endpoint = params.endpoint || Providers[this._provider].endpoint;

@@ -16,6 +16,7 @@ This project is a GPL-3.0 fork of [Translate Clipboard](https://github.com/lsnow
 - Pin and drag the result sidebar.
 - Switch between a high-contrast dark panel and a persistent light theme.
 - Configure primary and secondary target languages.
+- Check whether a configured LLM model is reachable with one button in the LLM settings page.
 
 ## What the Plus edition adds
 
@@ -124,6 +125,31 @@ api_key: dummy
 ```
 
 The request uses the OpenAI multimodal `chat/completions` format with an in-memory PNG data URL. The vision model only extracts text; the result is then sent to the translation engine selected in the extension settings.
+
+## Model availability check
+
+The LLM settings page has a server icon at the end of the Model field. It sends one
+minimal chat request (`ping`) to the endpoint, model, and API key that are currently
+in the fields, and reports the result on the `Model availability` row below: a green
+check with the model name and the round-trip time, or a red cross with the reason and
+a hint naming the thing to fix:
+
+```text
+Model is available: qwen3vl-it:4b (87 ms)
+Model is not available: 404 Not Found: The model `nope` does not exist - The model name was not found at this endpoint.
+Model is not available: 401 Unauthorized: invalid api key - The API key was rejected.
+Model is not available: Failed to connect: Connection refused
+```
+
+The check is informational only. It never writes settings and never blocks saving: a
+model that fails the check is saved and used exactly like one that passes. The row is
+the only place the result appears, and switching providers clears it.
+
+Requests follow the provider's own request shape, so OpenAI-compatible endpoints,
+Gemini, and Ollama are probed with the body each of them expects, and none of them
+carries `max_tokens` or `temperature`, which some current models reject outright. The
+configured network proxy is used when set, and the request times out after 15 seconds.
+Gemini builds its own URL, so an empty endpoint is normal there and is not rejected.
 
 ## Automatic reverse checks
 

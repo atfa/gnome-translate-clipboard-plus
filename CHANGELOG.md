@@ -1,5 +1,37 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- A model availability check in the LLM settings page. A server icon at the end of
+  the Model field sends one minimal chat request (`ping`) to the endpoint, model and
+  API key currently in the fields, and reports the outcome on a `Model availability`
+  row: a green check with the model name and the round-trip time, or a red cross with
+  the reason plus a hint naming the thing to fix — `404 Not Found: The model \`nope\`
+  does not exist - The model name was not found at this endpoint.`,
+  `401 Unauthorized: invalid api key - The API key was rejected.`,
+  `Failed to connect: Connection refused`. The check is informational: it writes no
+  settings and gates no save, so a model that fails it is saved and used like any
+  other. It follows each provider's request shape (OpenAI-compatible, Gemini
+  `generateContent` via a new `probeBody()`, Ollama `/api/chat` via `createMessage`)
+  and deliberately sends no `max_tokens` and no `temperature`, because the o1/gpt-5
+  family rejects `max_tokens` outright and a probe body must not be the thing that
+  fails. It honours the configured proxy, times out after 15 seconds, and drops
+  callbacks that outlive their probe so a provider switch cannot show a stale result.
+  Gemini builds its own URL and has no endpoint of its own, so an empty endpoint is
+  accepted for providers that supply `getUrl()`.
+
+### Fixed
+
+- Translation ignored the endpoint you typed. `AiTranslator` was constructed with the
+  saved provider settings, which include the endpoint the preferences page writes, but
+  it never read them: `translate()` posted to `this._provider.endpoint`, the endpoint
+  baked into the source. A custom endpoint was saved, shown in the UI, and then used
+  for nothing. It now uses the saved endpoint and falls back to the provider's
+  built-in one when the field is empty, which is also what makes the availability
+  check meaningful: it probes the URL the translation will actually hit.
+
 ## 1.0.2 - 2026-11-05
 
 ### Fixed

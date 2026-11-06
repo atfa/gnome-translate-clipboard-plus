@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: translate-clipboard-plus@atfa.github.io\n"
 "Report-Msgid-Bugs-To: https://github.com/atfa/gnome-translate-clipboard-plus/"
 "issues\n"
-"POT-Creation-Date: 2026-11-05 23:10+0800\n"
+"POT-Creation-Date: 2026-11-06 08:39+0800\n"
 "PO-Revision-Date: 2026-11-05 23:10+0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,278 +21,310 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: prefs.js:29
+#: prefs.js:46
 msgid "General"
 msgstr ""
 
-#: prefs.js:38 TcIndicator.js:112
+#: prefs.js:55 TcIndicator.js:112
 msgid "Screenshot translation"
 msgstr ""
 
-#: prefs.js:39
+#: prefs.js:56
 msgid ""
 "Recognize screenshot text with an OpenAI-compatible vision model, then "
 "translate it with the selected translation engine."
 msgstr ""
 
-#: prefs.js:44
+#: prefs.js:61
 msgid "Enable or disable translation"
 msgstr ""
 
-#: prefs.js:45
+#: prefs.js:62
 msgid "Whether to automatically translate selected text"
 msgstr ""
 
-#: prefs.js:48 TcIndicator.js:77
+#: prefs.js:65 TcIndicator.js:77
 msgid "Brief mode"
 msgstr ""
 
-#: prefs.js:52
+#: prefs.js:69
 msgid "Auto hide"
 msgstr ""
 
-#: prefs.js:79
+#: prefs.js:96
 msgid "Set Shortcut"
 msgstr ""
 
-#: prefs.js:87
+#: prefs.js:104
 msgid "Cancel"
 msgstr ""
 
-#: prefs.js:91
+#: prefs.js:108
 msgid "Apply"
 msgstr ""
 
-#: prefs.js:106
+#: prefs.js:123
 msgid ""
 "Press the desired shortcut keys.\n"
 "Press Esc to cancel, Backspace to clear current input."
 msgstr ""
 
-#: prefs.js:116
+#: prefs.js:133
 msgid "Press a key..."
 msgstr ""
 
-#: prefs.js:133 prefs.js:217 TcIndicator.js:116 TcIndicator.js:209
+#: prefs.js:150 prefs.js:234 TcIndicator.js:116 TcIndicator.js:209
 #: TcIndicator.js:211
 msgid "Disabled"
 msgstr ""
 
-#: prefs.js:155
+#: prefs.js:172
 msgid "Cleared (Press Apply)"
 msgstr ""
 
-#: prefs.js:195
+#: prefs.js:212
 msgid "Translate the selected text"
 msgstr ""
 
-#: prefs.js:196
+#: prefs.js:213
 msgid "Shortcut keys for translating selected text"
 msgstr ""
 
-#: prefs.js:208 TcIndicator.js:85
+#: prefs.js:225 TcIndicator.js:85
 msgid "Screenshot and translate"
 msgstr ""
 
-#: prefs.js:209
+#: prefs.js:226
 msgid "Drag to select an area, recognize its text, and translate it."
 msgstr ""
 
-#: prefs.js:236
+#: prefs.js:253
 msgid "Vision endpoint"
 msgstr ""
 
-#: prefs.js:240
+#: prefs.js:257
 msgid "Vision model"
 msgstr ""
 
-#: prefs.js:244
+#: prefs.js:261
 msgid "Vision API key"
 msgstr ""
 
-#: prefs.js:265
+#: prefs.js:282
 msgid "TTS Voice"
 msgstr ""
 
-#: prefs.js:266
+#: prefs.js:283
 msgid "Text-to-speech"
 msgstr ""
 
-#: prefs.js:296
+#: prefs.js:313
 msgid "Auto hide mode"
 msgstr ""
 
-#: prefs.js:297
+#: prefs.js:314
 msgid "How to auto hide the translation window"
 msgstr ""
 
-#: prefs.js:302
+#: prefs.js:319
 msgid "Timeout"
 msgstr ""
 
-#: prefs.js:303
+#: prefs.js:320
 msgid "Click outside"
 msgstr ""
 
-#: prefs.js:304
+#: prefs.js:321
 msgid "Both"
 msgstr ""
 
-#: prefs.js:334
+#: prefs.js:351
 msgid "Network proxy"
 msgstr ""
 
-#: prefs.js:343
+#: prefs.js:360
 msgid "Engine"
 msgstr ""
 
-#: prefs.js:344
+#: prefs.js:361
 msgid "Translation engine"
 msgstr ""
 
-#: prefs.js:372 TcIndicator.js:660 TcIndicator.js:723
+#: prefs.js:389 TcIndicator.js:660 TcIndicator.js:723
 msgid "Auto"
 msgstr ""
 
-#: prefs.js:389 TcIndicator.js:65
+#: prefs.js:406 TcIndicator.js:65
 msgid "Source language"
 msgstr ""
 
-#: prefs.js:390
+#: prefs.js:407
 msgid "Language code (e.g., en, zh, auto for auto-detect)"
 msgstr ""
 
-#: prefs.js:407 TcIndicator.js:66
+#: prefs.js:424 TcIndicator.js:66
 msgid "Primary target language"
 msgstr ""
 
-#: prefs.js:408
+#: prefs.js:425
 msgid "Primary target language code (higher priority)"
 msgstr ""
 
-#: prefs.js:427 TcIndicator.js:672 TcIndicator.js:721
+#: prefs.js:444 TcIndicator.js:672 TcIndicator.js:721
 msgid "None"
 msgstr ""
 
-#: prefs.js:437 TcIndicator.js:67
+#: prefs.js:454 TcIndicator.js:67
 msgid "Secondary target language"
 msgstr ""
 
-#: prefs.js:438
+#: prefs.js:455
 msgid "Secondary target language code (lower priority, optional)"
 msgstr ""
 
-#: prefs.js:478
+#: prefs.js:495
 msgid "LLM"
 msgstr ""
 
-#: prefs.js:495
+#: prefs.js:512
 msgid "Provider"
 msgstr ""
 
-#: prefs.js:496
+#: prefs.js:513
 msgid "LLM service provider"
 msgstr ""
 
-#: prefs.js:502
+#: prefs.js:519
 msgid "Endpoint"
 msgstr ""
 
-#: prefs.js:503
+#: prefs.js:520
 msgid "Endpoint for the LLM service"
 msgstr ""
 
-#: prefs.js:510
+#: prefs.js:527
 msgid "Undo"
 msgstr ""
 
-#: prefs.js:518
+#: prefs.js:535
 msgid "Model"
 msgstr ""
 
-#: prefs.js:519
+#: prefs.js:536
 msgid "Model name/identifier for the LLM service"
 msgstr ""
 
-#: prefs.js:526
+#: prefs.js:543
 msgid "Next model"
 msgstr ""
 
-#: prefs.js:532
+#: prefs.js:549
 msgid "More models"
 msgstr ""
 
-#: prefs.js:541
+#: prefs.js:555
+msgid "Check whether the model is available"
+msgstr ""
+
+#: prefs.js:565
 msgid "API Key"
 msgstr ""
 
-#: prefs.js:548
+#: prefs.js:572
 msgid "New"
 msgstr ""
 
-#: prefs.js:549
+#: prefs.js:573
 msgid "Signup"
 msgstr ""
 
-#: prefs.js:557
+#: prefs.js:583
+msgid "Model availability"
+msgstr ""
+
+#: prefs.js:584
+msgid ""
+"Send one minimal request to check the endpoint, model and API key. Saving is "
+"never blocked by the result."
+msgstr ""
+
+#: prefs.js:601
 msgid "Prompt template"
 msgstr ""
 
-#: prefs.js:577
+#: prefs.js:621
 msgid "Reset All Settings"
 msgstr ""
 
-#: prefs.js:721
+#: prefs.js:726
+msgid "A model name is required to check the model."
+msgstr ""
+
+#: prefs.js:738
+msgid "Checking the model…"
+msgstr ""
+
+#: prefs.js:756
+#, javascript-format
+msgid "Model is available: %1$s (%2$s ms)"
+msgstr ""
+
+#: prefs.js:759
+#, javascript-format
+msgid "Model is not available: %1$s"
+msgstr ""
+
+#: prefs.js:848
 msgid "About"
 msgstr ""
 
-#: prefs.js:728 TranslateWindow.js:206
+#: prefs.js:855 TranslateWindow.js:206
 msgid "Translate Clipboard Plus"
 msgstr ""
 
-#: prefs.js:729
+#: prefs.js:856
 msgid "Clipboard translation, screenshot OCR, and reverse checks."
 msgstr ""
 
-#: prefs.js:733
+#: prefs.js:860
 msgid "Privacy Notice"
 msgstr ""
 
-#: prefs.js:733
+#: prefs.js:860
 msgid ""
 "This extension needs clipboard access and may send clipboard contents to "
 "third-party translation, text-to-speech, or LLM services."
 msgstr ""
 
-#: prefs.js:734
+#: prefs.js:861
 msgid "Credits"
 msgstr ""
 
-#: prefs.js:734
+#: prefs.js:861
 msgid "Forked from Translate Clipboard by lsnow and extended by atfa."
 msgstr ""
 
-#: prefs.js:740
+#: prefs.js:867
 msgid "Extension Page"
 msgstr ""
 
-#: prefs.js:741
+#: prefs.js:868
 msgid "Source Code"
 msgstr ""
 
-#: prefs.js:742
+#: prefs.js:869
 msgid "Report an Issue"
 msgstr ""
 
-#: prefs.js:743
+#: prefs.js:870
 msgid "License"
 msgstr ""
 
-#: prefs.js:743
+#: prefs.js:870
 msgid "GNU General Public License v3.0"
 msgstr ""
 
-#: prefs.js:761
+#: prefs.js:888
 msgid "Open"
 msgstr ""
 
@@ -392,15 +424,15 @@ msgstr ""
 msgid "Translation result could not be displayed."
 msgstr ""
 
-#: google.js:46 llm.js:278
+#: google.js:46 llm.js:299 llm.js:427
 msgid "Invalid proxy protocol"
 msgstr ""
 
-#: google.js:59 llm.js:298
+#: google.js:59 llm.js:320 llm.js:486
 msgid "Failed to connect: "
 msgstr ""
 
-#: google.js:69 llm.js:306
+#: google.js:69 llm.js:328 llm.js:472
 msgid "Unable to send libsoup json message: "
 msgstr ""
 
@@ -408,32 +440,56 @@ msgstr ""
 msgid "404 (Page not found)"
 msgstr ""
 
-#: llm.js:43
+#: llm.js:47
 msgid "OpenRouter"
 msgstr ""
 
-#: llm.js:83
+#: llm.js:87
 msgid "Google Gemini"
 msgstr ""
 
-#: llm.js:107
+#: llm.js:121
 msgid "OpenAI"
 msgstr ""
 
-#: llm.js:126
+#: llm.js:140
 msgid "DeepSeek"
 msgstr ""
 
-#: llm.js:146
+#: llm.js:160
 msgid "Ollama"
 msgstr ""
 
-#: llm.js:175
+#: llm.js:192
 msgid "Custom (compatible with OpenAI)"
 msgstr ""
 
-#: llm.js:287
+#: llm.js:309 llm.js:438
 msgid "Unable to create request for: "
+msgstr ""
+
+#: llm.js:415
+msgid "An endpoint is required to check the model."
+msgstr ""
+
+#: llm.js:485
+msgid "The request timed out. Check the endpoint and your network."
+msgstr ""
+
+#: llm.js:553
+msgid "The API key was rejected."
+msgstr ""
+
+#: llm.js:555
+msgid "The model name was not found at this endpoint."
+msgstr ""
+
+#: llm.js:557
+msgid "The service is rate limiting this key."
+msgstr ""
+
+#: llm.js:559
+msgid "The service reported an internal error."
 msgstr ""
 
 #: vision.js:32
